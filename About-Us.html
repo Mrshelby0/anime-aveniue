@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anime Avenue — Catalog</title>
+
+  <!-- Fonts & Tailwind (matches Index.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="transition.css">
+  <style>
+    :root{
+      --aa-primary:#a855f7;
+      --aa-secondary:#22d3ee;
+      --aa-hot:#f472b6;
+    }
+    html,body{font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .aa-title{font-family:'Oxanium',system-ui}
+    .aa-glow{filter: drop-shadow(0 0 12px rgba(168,85,247,.6)) drop-shadow(0 0 32px rgba(34,211,238,.25));}
+    .aa-neon-border{position:relative}
+    .aa-neon-border:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      pointer-events: none;
+      z-index: 1;
+      border: 3px solid transparent;
+      background: linear-gradient(135deg, var(--aa-primary), var(--aa-secondary), var(--aa-hot)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .aa-card{transition:transform .35s ease, box-shadow .35s ease}
+    .aa-card:hover{transform:translateY(-6px) scale(1.02)}
+    .aa-gradient-text{background:linear-gradient(90deg,var(--aa-secondary),var(--aa-primary),var(--aa-hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+    /* Modal transition styles */
+    #aaModal.aa-modal { opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+    #aaModal.aa-modal.aa-modal-visible { opacity: 1; pointer-events: auto; }
+    /* Panel (inner) scale/fade */
+    #aaModal .aa-modal-panel { transform: translateY(8px) scale(.98); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease; }
+    #aaModal.aa-modal-visible .aa-modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+    /* make thumbnails slightly interactive */
+    #mThumbs button { transition: transform 120ms ease, box-shadow 120ms ease; }
+    #mThumbs button:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(168,85,247,.12); }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
+  <script src="transition.js"></script>
+  <!-- Header (same theme as Index) -->
+  <header class="sticky top-0 z-40 bg-gray-900/80 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+      <a href="Index.html" class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-400 aa-glow overflow-hidden">
+          <img src="images/Katana/anime.jpg" alt="Logo" class="h-full w-full object-cover rounded-xl">
+        </div>
+        <div class="aa-title text-xl font-extrabold tracking-wide">ANIME <span class="aa-gradient-text">AVENUE</span></div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="Index.html#home" class="hover:text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Home</a>
+        <a href="Catalog.html" class="hover:text-fuchsia-400 font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Catalog</a>
+        <a href="About-Us.html" class="text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">About Us</a>
+      </nav>
+      <!-- Log-In Button & Cart Button Grouped -->
+      <div class="flex items-center gap-2">
+        <!-- Cart Button (icon) -->
+        <button id="cartBtn" class="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-fuchsia-600 aa-glow hover:bg-black hover:scale-110 transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-500" title="View Cart">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cartCount" class="absolute -top-1 -right-1 bg-fuchsia-400 text-xs text-white rounded-full px-1.5 py-0.5 font-bold hidden">0</span>
+        </button>
+      </div>
+        <!-- Mobile Menu Button -->
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-white/10">☰</button>
+    </div>
+  </header>
+  <!-- Mobile Navigation Panel -->
+  <nav id="mobilePanel" class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-start pt-24 space-y-6 opacity-0 scale-y-0 pointer-events-none transition-all duration-300 md:hidden">
+    <a href="Index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
+    <a href="Catalog.html" class="text-lg font-semibold text-white" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Catalog</a>
+    <a href="Index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
+    <a href="Index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
+    <a href="login.html" target="_blank" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Log-In</a>
+    <button onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';" class="mt-8 px-6 py-2 rounded-full bg-fuchsia-600 text-white font-semibold">Close</button>
+  </nav>
+
+  <!-- Cart Slide-Over -->
+  <div id="cartPanel" class="fixed inset-0 z-50 flex justify-end bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-gray-900 h-full shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+      <button id="closeCart" class="absolute top-3 right-3 text-gray-400 hover:text-white z-20 text-2xl" aria-label="Close Cart">✖</button>
+      <div class="p-6 border-b border-white/10 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="aa-title text-xl font-bold">Your Cart</span>
+      </div>
+      <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4 text-gray-200">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="p-6 border-t border-white/10">
+        <div class="flex justify-between items-center mb-4">
+          <span class="font-semibold">Total:</span>
+          <span id="cartTotal" class="font-bold text-lg text-fuchsia-400">₹0</span>
+        </div>
+        <a href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="block w-full text-center py-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold aa-glow">Checkout via Instagram</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Cart Slide-Over Logic with Quantity Controls ---
+    const cartBtn = document.getElementById('cartBtn');
+    const cartPanel = document.getElementById('cartPanel');
+    const closeCart = document.getElementById('closeCart');
+    const cartCount = document.getElementById('cartCount');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+
+    // Simple cart state (localStorage for persistence)
+    function getCart() {
+      try {
+        return JSON.parse(localStorage.getItem('aa_cart') || '[]');
+      } catch { return []; }
+    }
+    function setCart(cart) {
+      localStorage.setItem('aa_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      // Count total items (sum of quantities)
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      cartCount.textContent = totalItems;
+      cartCount.classList.toggle('hidden', totalItems === 0);
+
+      // Render cart items
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="text-gray-400 text-center py-12">Your cart is empty.</div>';
+        cartTotal.textContent = '₹0';
+        return;
+      }
+      let total = 0;
+      cartItems.innerHTML = cart.map((item, idx) => {
+        const priceNum = parseInt(item.price.replace(/[^\d]/g, '')) || 0;
+        total += priceNum * (item.qty || 1);
+        return `
+          <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-3">
+            <img src="${item.img}" alt="${item.title}" class="w-16 h-16 object-cover rounded-lg border border-white/10">
+            <div class="flex-1">
+              <div class="font-semibold">${item.title}</div>
+              <div class="text-fuchsia-400">${item.price}</div>
+              <div class="flex items-center gap-2 mt-1">
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="minus" aria-label="Decrease quantity">−</button>
+                <span class="inline-block w-6 text-center">${item.qty || 1}</span>
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <button class="removeCartItem text-gray-400 hover:text-fuchsia-400 text-xl" data-idx="${idx}" title="Remove">&times;</button>
+          </div>
+        `;
+      }).join('');
+      cartTotal.textContent = `₹${total}`;
+    }
+
+    // Open cart panel
+    cartBtn.addEventListener('click', () => {
+      cartPanel.classList.remove('pointer-events-none', 'opacity-0');
+      setTimeout(() => {
+        cartPanel.classList.add('opacity-100');
+        cartPanel.querySelector('div').classList.remove('translate-x-full');
+        cartPanel.querySelector('div').classList.add('translate-x-0');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+      updateCartUI();
+    });
+
+    // Close cart panel
+    function closeCartPanel() {
+      cartPanel.classList.remove('opacity-100');
+      cartPanel.querySelector('div').classList.remove('translate-x-0');
+      cartPanel.querySelector('div').classList.add('translate-x-full');
+      setTimeout(() => {
+        cartPanel.classList.add('pointer-events-none', 'opacity-0');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+    closeCart.addEventListener('click', closeCartPanel);
+    cartPanel.addEventListener('mousedown', (e) => {
+      if (e.target === cartPanel) closeCartPanel();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && cartPanel.classList.contains('opacity-100')) closeCartPanel();
+    });
+
+    // Remove item from cart
+    cartItems.addEventListener('click', (e) => {
+      if (e.target.classList.contains('removeCartItem')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const cart = getCart();
+        cart.splice(idx, 1);
+        setCart(cart);
+      }
+      // Quantity plus/minus
+      if (e.target.classList.contains('cartQtyBtn')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const action = e.target.dataset.action;
+        const cart = getCart();
+        if (!cart[idx]) return;
+        cart[idx].qty = cart[idx].qty || 1;
+        if (action === 'plus') {
+          cart[idx].qty += 1;
+        } else if (action === 'minus') {
+          if (cart[idx].qty > 1) {
+            cart[idx].qty -= 1;
+          } else {
+            // Remove item if qty goes below 1
+            cart.splice(idx, 1);
+          }
+        }
+        setCart(cart);
+      }
+    });
+
+    // Add to cart logic for catalog cards
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.add-to-cart');
+      if (!btn) return;
+      const card = btn.closest('article');
+      if (!card) return;
+      const img = card.querySelector('img')?.src || '';
+      const title = card.dataset.title || card.querySelector('h3')?.textContent || '';
+      const price = card.dataset.price || card.querySelector('p')?.textContent || '';
+      const cart = getCart();
+      // Check if item already exists (by title and price)
+      const existing = cart.find(item => item.title === title && item.price === price);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ img, title, price, qty: 1 });
+      }
+      setCart(cart);
+      // Optionally, show cart after adding
+      cartBtn.classList.add('ring-2', 'ring-fuchsia-400');
+      setTimeout(() => cartBtn.classList.remove('ring-2', 'ring-fuchsia-400'), 400);
+    });
+
+    // Initialize cart UI on load
+    updateCartUI();
+  </script>
+  </header>
+  <!-- Main hero -->
+  <main class="flex-1">
+    <!-- ABOUT content (updated) -->
+    <section class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <h1 class="aa-title text-4xl font-extrabold mb-4">Welcome to <span class="aa-gradient-text">Anime Avenue</span>!</h1>
+          <p class="text-gray-300 mb-4">At Anime Avenue, our passion is bringing the world of anime closer to you. We carefully curate a premium collection of figures, props, and exclusive merchandise—sourced only from trusted sellers, so you never have to worry about authenticity. Whether you’re a dedicated collector or a new enthusiast, we’ve got something unique for every anime fan.</p>
+
+          <h3 class="text-xl font-semibold mb-2">Why choose us?</h3>
+          <ul class="list-inside list-disc text-gray-300 mb-6 ml-4">
+            <li><strong>Authentic Merchandise:</strong> Every item is personally verified so you can collect with confidence.</li>
+            <li><strong>Limited Drops:</strong> Discover rare finds and special releases, available in limited quantities for true aficionados.</li>
+            <li><strong>Fast, Friendly Support:</strong> Have questions? Our team is just a DM away on Instagram for quotes, recommendations, and assistance.</li>
+            <li><strong>Community Focused:</strong> We’re collectors and fans, just like you. Join our growing community to stay in the loop for the latest drops and updates.</li>
+          </ul>
+
+          <div class="aa-neon rounded-2xl p-4 mb-4">
+            <h4 class="aa-title text-lg font-semibold">Need help ordering?</h4>
+            <p class="text-gray-300">Simply DM us on Instagram and we’ll handle everything for you.</p>
+            <a target="_blank" href="https://www.instagram.com/_.anime.avenue._/" class="inline-block mt-3 px-4 py-2 rounded-lg bg-fuchsia-600 aa-glow">DM to Order</a>
+          </div>
+        </div>
+
+        <div class="relative">
+          <img src="images/Katana/anime.jpg" alt="Showcase" class="w-full h-96 object-cover rounded-2xl shadow-2xl">
+          <div class="absolute -bottom-6 left-6 bg-black/60 px-4 py-2 rounded-full aa-title text-fuchsia-300">Limited Drops & Exclusive Merch</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Team (Meet Our Team) -->
+    <section class="max-w-7xl mx-auto px-6 pb-12">
+      <h2 class="aa-title text-2xl mb-6">Meet Our Team</h2>
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <article class="bg-gray-900 rounded-2xl p-6 aa-neon text-center">
+          <img src="images/Team/Founder.jpg" alt="Manav" class="w-28 h-28 object-cover rounded-full mx-auto mb-3">
+          <div class="font-semibold">Manav</div>
+          <div class="text-sm text-gray-400 mb-2">Founder</div>
+          <p class="text-xs text-gray-400">Collector, curator, and dedicated developer bringing this vision to life.</p>
+        </article>
+
+        <article class="bg-gray-900 rounded-2xl p-6 aa-neon text-center">
+          <img src="images/Team/member2.jpg" alt="Ami" class="w-28 h-28 object-cover rounded-full mx-auto mb-3">
+          <div class="font-semibold">Ami</div>
+          <div class="text-sm text-gray-400">Operations</div>
+        </article>
+
+        <article class="bg-gray-900 rounded-2xl p-6 aa-neon text-center">
+          <img src="images/Team/member3.jpg" alt="Raj" class="w-28 h-28 object-cover rounded-full mx-auto mb-3">
+          <div class="font-semibold">Raj</div>
+          <div class="text-sm text-gray-400">Shipping</div>
+        </article>
+
+        <article class="bg-gray-900 rounded-2xl p-6 aa-neon text-center">
+          <img src="images/Team/member4.jpg" alt="Lina" class="w-28 h-28 object-cover rounded-full mx-auto mb-3">
+          <div class="font-semibold">Lina</div>
+          <div class="text-sm text-gray-400">Design</div>
+        </article>
+      </div>
+    </section>
+    <!-- End ABOUT content -->
+   </main>
+   
+   <!-- Footer -->
+   <footer class="border-t border-white/10 mt-8">
+     <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-400 flex items-center justify-between">
+       <p>© 2025 Anime Avenue</p>
+       <div class="flex items-center gap-6">
+         <a href="Index.html#home" class="hover:text-fuchsia-400 aa-btn">Home</a>
+         <a href="Catalog.html" class="hover:text-fuchsia-400 aa-btn">Catalog</a>
+         <a href="login.html" class="hover:text-fuchsia-400 aa-btn">Login</a>
+       </div>
+     </div>
+   </footer>
+
+  <script>
+    // Mobile menu toggle
+    (function(){
+      const menuBtn = document.getElementById('menuBtn');
+      const mobilePanel = document.getElementById('mobilePanel');
+      if(menuBtn && mobilePanel){
+        menuBtn.addEventListener('click', ()=>{
+          const open = mobilePanel.classList.contains('opacity-100');
+          mobilePanel.classList.toggle('opacity-0', open);
+          mobilePanel.classList.toggle('opacity-100', !open);
+          mobilePanel.classList.toggle('scale-y-0', open);
+          mobilePanel.classList.toggle('scale-y-100', !open);
+          mobilePanel.classList.toggle('pointer-events-none', open);
+        });
+      }
+
+      // Active nav
+      document.querySelectorAll('.aa-link').forEach(a=>{
+        try {
+          if (location.pathname.split('/').pop().toLowerCase() === (a.getAttribute('href')||'').split('/').pop().toLowerCase()) {
+            a.classList.add('text-fuchsia-400','font-semibold');
+          }
+        } catch(e){}
+      });
+    })();
+
+    // Simple working cart (reads/writes aa_cart in localStorage)
+    (function(){
+      const cartBtn = document.getElementById('cartBtn');
+      const cartPanel = document.getElementById('cartPanel');
+      const cartSlide = document.getElementById('cartSlide');
+      const closeCart = document.getElementById('closeCart');
+      const cartItemsEl = document.getElementById('cartItems');
+      const cartCountEl = document.getElementById('cartCount');
+      const cartTotalEl = document.getElementById('cartTotal');
+
+      function getCart(){ try { return JSON.parse(localStorage.getItem('aa_cart')||'[]'); } catch { return []; } }
+      function setCart(c){ localStorage.setItem('aa_cart', JSON.stringify(c)); renderCart(); }
+
+      function parsePrice(p){ return Number(String(p||'').replace(/[^\d]/g,''))||0; }
+
+      function renderCart(){
+        const cart = getCart();
+        const totalQty = cart.reduce((s,i)=> s + (i.qty||1),0);
+        cartCountEl.textContent = totalQty;
+        cartCountEl.classList.toggle('hidden', totalQty === 0);
+
+        if(!cart.length){
+          cartItemsEl.innerHTML = '<div class="text-gray-400 text-center py-8">Your cart is empty.</div>';
+          cartTotalEl.textContent = '₹0';
+          return;
+        }
+
+        let total = 0;
+        cartItemsEl.innerHTML = cart.map((it, idx) => {
+          const priceNum = it.priceNum || parsePrice(it.price);
+          total += priceNum * (it.qty||1);
+          return `
+            <div class="flex items-center gap-3 bg-gray-800 rounded-lg p-3">
+              <img src="${it.img||'images/Action Figure/zoro.jpg'}" class="w-14 h-14 object-cover rounded-md" alt="">
+              <div class="flex-1">
+                <div class="font-semibold text-sm">${it.title||'Item'}</div>
+                <div class="text-xs text-gray-400">${it.price||'₹0'}</div>
+                <div class="mt-2 flex items-center gap-2">
+                  <button class="qtyBtn px-2 py-0.5 rounded bg-gray-700 text-white" data-idx="${idx}" data-action="minus">−</button>
+                  <span class="w-6 text-center">${it.qty||1}</span>
+                  <button class="qtyBtn px-2 py-0.5 rounded bg-gray-700 text-white" data-idx="${idx}" data-action="plus">+</button>
+                </div>
+              </div>
+              <button class="removeBtn text-gray-400" data-idx="${idx}">✕</button>
+            </div>
+          `;
+        }).join('');
+        cartTotalEl.textContent = `₹${total}`;
+      }
+
+      // open cart
+      if(cartBtn){
+        cartBtn.addEventListener('click', ()=>{
+          cartPanel.classList.remove('pointer-events-none','opacity-0');
+          setTimeout(()=> cartPanel.classList.add('opacity-100'), 10);
+          // show slide panel
+          cartSlide.classList.add('panel-open');
+          cartSlide.classList.remove('panel-enter');
+          document.body.style.overflow = 'hidden';
+          renderCart();
+        });
+      }
+
+      // close handlers
+      if(closeCart) closeCart.addEventListener('click', closeCartPanel);
+      function closeCartPanel(){
+        cartPanel.classList.remove('opacity-100');
+        cartSlide.classList.remove('panel-open');
+        cartSlide.classList.add('panel-enter');
+        setTimeout(()=> {
+          cartPanel.classList.add('pointer-events-none','opacity-0');
+          document.body.style.overflow = '';
+        }, 300);
+      }
+      cartPanel.addEventListener('mousedown', (e)=>{ if(e.target === cartPanel) closeCartPanel(); });
+
+      // cart item events (delegate)
+      cartItemsEl.addEventListener('click', (e)=>{
+        const target = e.target;
+        const idx = target.dataset && target.dataset.idx ? Number(target.dataset.idx) : null;
+        if(target.classList.contains('removeBtn')){
+          const cart = getCart(); cart.splice(idx,1); setCart(cart); return;
+        }
+        if(target.classList.contains('qtyBtn')){
+          const action = target.dataset.action;
+          const cart = getCart();
+          if(!cart[idx]) return;
+          cart[idx].qty = cart[idx].qty || 1;
+          if(action === 'plus') cart[idx].qty += 1;
+          if(action === 'minus'){
+            if(cart[idx].qty > 1) cart[idx].qty -= 1; else cart.splice(idx,1);
+          }
+          setCart(cart);
+        }
+      });
+
+      // expose addToCart helper to other pages via window
+      window.aaAddToCart = function(item){
+        // item: { key, title, price, priceNum, img, qty }
+        const cart = getCart();
+        const found = cart.find(i => i.key === item.key);
+        if(found) found.qty = (found.qty||1) + (item.qty||1);
+        else cart.push({ key: item.key, title: item.title, price: item.price, priceNum: item.priceNum||parsePrice(item.price), img: item.img||'', qty: item.qty||1 });
+        setCart(cart);
+      };
+
+      // init
+      renderCart();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anime Avenue — Catalog</title>
+
+  <!-- Fonts & Tailwind (matches Index.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="transition.css">
+  <style>
+    :root{
+      --aa-primary:#a855f7;
+      --aa-secondary:#22d3ee;
+      --aa-hot:#f472b6;
+    }
+    html,body{font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .aa-title{font-family:'Oxanium',system-ui}
+    .aa-glow{filter: drop-shadow(0 0 12px rgba(168,85,247,.6)) drop-shadow(0 0 32px rgba(34,211,238,.25));}
+    .aa-neon-border{position:relative}
+    .aa-neon-border:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      pointer-events: none;
+      z-index: 1;
+      border: 3px solid transparent;
+      background: linear-gradient(135deg, var(--aa-primary), var(--aa-secondary), var(--aa-hot)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .aa-card{transition:transform .35s ease, box-shadow .35s ease}
+    .aa-card:hover{transform:translateY(-6px) scale(1.02)}
+    .aa-gradient-text{background:linear-gradient(90deg,var(--aa-secondary),var(--aa-primary),var(--aa-hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+    /* Modal transition styles */
+    #aaModal.aa-modal { opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+    #aaModal.aa-modal.aa-modal-visible { opacity: 1; pointer-events: auto; }
+    /* Panel (inner) scale/fade */
+    #aaModal .aa-modal-panel { transform: translateY(8px) scale(.98); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease; }
+    #aaModal.aa-modal-visible .aa-modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+    /* make thumbnails slightly interactive */
+    #mThumbs button { transition: transform 120ms ease, box-shadow 120ms ease; }
+    #mThumbs button:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(168,85,247,.12); }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
+  <script src="transition.js"></script>
+  <!-- Header (same theme as Index) -->
+  <header class="sticky top-0 z-40 bg-gray-900/80 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+      <a href="Index.html" class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-400 aa-glow overflow-hidden">
+          <img src="images/Katana/anime.jpg" alt="Logo" class="h-full w-full object-cover rounded-xl">
+        </div>
+        <div class="aa-title text-xl font-extrabold tracking-wide">ANIME <span class="aa-gradient-text">AVENUE</span></div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="Index.html#home" class="text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Home</a>
+        <a href="Catalog.html" class="hover:text-fuchsia-400 font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Catalog</a>
+        <a href="About-Us.html" class="hover:text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">About-Us</a>
+      </nav>
+      <!-- Log-In Button & Cart Button Grouped -->
+      <div class="flex items-center gap-2">
+        <!-- Cart Button (icon) -->
+        <button id="cartBtn" class="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-fuchsia-600 aa-glow hover:bg-black hover:scale-110 transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-500" title="View Cart">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cartCount" class="absolute -top-1 -right-1 bg-fuchsia-400 text-xs text-white rounded-full px-1.5 py-0.5 font-bold hidden">0</span>
+        </button>
+      </div>
+        <!-- Mobile Menu Button -->
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-white/10">☰</button>
+    </div>
+  </header>
+  <!-- Mobile Navigation Panel -->
+  <nav id="mobilePanel" class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-start pt-24 space-y-6 opacity-0 scale-y-0 pointer-events-none transition-all duration-300 md:hidden">
+    <a href="Index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
+    <a href="Catalog.html" class="text-lg font-semibold text-white" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Catalog</a>
+    <a href="Index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
+    <a href="Index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
+    <a href="login.html" target="_blank" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Log-In</a>
+    <button onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';" class="mt-8 px-6 py-2 rounded-full bg-fuchsia-600 text-white font-semibold">Close</button>
+  </nav>
+
+  <!-- Cart Slide-Over -->
+  <div id="cartPanel" class="fixed inset-0 z-50 flex justify-end bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-gray-900 h-full shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+      <button id="closeCart" class="absolute top-3 right-3 text-gray-400 hover:text-white z-20 text-2xl" aria-label="Close Cart">✖</button>
+      <div class="p-6 border-b border-white/10 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="aa-title text-xl font-bold">Your Cart</span>
+      </div>
+      <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4 text-gray-200">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="p-6 border-t border-white/10">
+        <button id="checkoutBtn" class="block w-full text-center py-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold aa-glow">Checkout — Email Invoice</button>
+      </div>
+    </div>
+  </div>
+<!-- Coming Soon Modal -->
+<div id="comingSoonModal" class="fixed inset-0 z-50  items-center justify-center bg-black/70 hidden">
+  <div class="bg-gray-900 p-6 rounded-2xl shadow-xl text-center max-w-sm w-full border border-fuchsia-600">
+    <h2 class="aa-title text-2xl font-bold text-fuchsia-400">🚧 Coming Soon!</h2>
+    <p class="text-gray-300 mt-2">This section is under construction. Stay tuned for updates!</p>
+    <button id="closeComingSoon" class="mt-4 px-4 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Close</button>
+  </div>
+</div>
+<script>
+  const comingSoonModal = document.getElementById("comingSoonModal");
+  const closeComingSoon = document.getElementById("closeComingSoon");
+
+  // Categories that are NOT available yet
+  const comingSoonCategories = ["katanas", "bobbleheads", "posters", "q posket"];
+
+  // Listen for tab clicks
+  document.querySelectorAll(".aa-tab").forEach(tab => {
+    tab.addEventListener("click", (e) => {
+      const category = tab.dataset.category;
+      if (comingSoonCategories.includes(category)) {
+        e.preventDefault(); // stop normal filtering
+        comingSoonModal.classList.remove("hidden");
+      }
+    });
+  });
+
+  // Close modal
+  closeComingSoon.addEventListener("click", () => {
+    comingSoonModal.classList.add("hidden");
+  });
+
+  // Close on background click
+  comingSoonModal.addEventListener("click", (e) => {
+    if (e.target === comingSoonModal) {
+      comingSoonModal.classList.add("hidden");
+    }
+  });
+</script>
+
+
+  <script>
+    // --- Cart Slide-Over Logic with Quantity Controls ---
+    const cartBtn = document.getElementById('cartBtn');
+    const cartPanel = document.getElementById('cartPanel');
+    const closeCart = document.getElementById('closeCart');
+    const cartCount = document.getElementById('cartCount');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+
+    // Simple cart state (localStorage for persistence)
+    function getCart() {
+      try {
+        return JSON.parse(localStorage.getItem('aa_cart') || '[]');
+      } catch { return []; }
+    }
+    function setCart(cart) {
+      localStorage.setItem('aa_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      // Count total items (sum of quantities)
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      cartCount.textContent = totalItems;
+      cartCount.classList.toggle('hidden', totalItems === 0);
+
+      // Render cart items
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="text-gray-400 text-center py-12">Your cart is empty.</div>';
+        cartTotal.textContent = '₹0';
+        return;
+      }
+      let total = 0;
+      cartItems.innerHTML = cart.map((item, idx) => {
+        const priceNum = parseInt(item.price.replace(/[^\d]/g, '')) || 0;
+        total += priceNum * (item.qty || 1);
+        return `
+          <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-3">
+            <img src="${item.img}" alt="${item.title}" class="w-16 h-16 object-cover rounded-lg border border-white/10">
+            <div class="flex-1">
+              <div class="font-semibold">${item.title}</div>
+              <div class="text-fuchsia-400">${item.price}</div>
+              <div class="flex items-center gap-2 mt-1">
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="minus" aria-label="Decrease quantity">−</button>
+                <span class="inline-block w-6 text-center">${item.qty || 1}</span>
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <button class="removeCartItem text-gray-400 hover:text-fuchsia-400 text-xl" data-idx="${idx}" title="Remove">&times;</button>
+          </div>
+        `;
+      }).join('');
+      cartTotal.textContent = `₹${total}`;
+    }
+
+    // Open cart panel
+    cartBtn.addEventListener('click', () => {
+      cartPanel.classList.remove('pointer-events-none', 'opacity-0');
+      setTimeout(() => {
+        cartPanel.classList.add('opacity-100');
+        cartPanel.querySelector('div').classList.remove('translate-x-full');
+        cartPanel.querySelector('div').classList.add('translate-x-0');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+      updateCartUI();
+    });
+
+    // Close cart panel
+    function closeCartPanel() {
+      cartPanel.classList.remove('opacity-100');
+      cartPanel.querySelector('div').classList.remove('translate-x-0');
+      cartPanel.querySelector('div').classList.add('translate-x-full');
+      setTimeout(() => {
+        cartPanel.classList.add('pointer-events-none', 'opacity-0');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+    closeCart.addEventListener('click', closeCartPanel);
+    cartPanel.addEventListener('mousedown', (e) => {
+      if (e.target === cartPanel) closeCartPanel();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && cartPanel.classList.contains('opacity-100')) closeCartPanel();
+    });
+
+    // Remove item from cart
+    cartItems.addEventListener('click', (e) => {
+      if (e.target.classList.contains('removeCartItem')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const cart = getCart();
+        cart.splice(idx, 1);
+        setCart(cart);
+      }
+      // Quantity plus/minus
+      if (e.target.classList.contains('cartQtyBtn')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const action = e.target.dataset.action;
+        const cart = getCart();
+        if (!cart[idx]) return;
+        cart[idx].qty = cart[idx].qty || 1;
+        if (action === 'plus') {
+          cart[idx].qty += 1;
+        } else if (action === 'minus') {
+          if (cart[idx].qty > 1) {
+            cart[idx].qty -= 1;
+          } else {
+            // Remove item if qty goes below 1
+            cart.splice(idx, 1);
+          }
+        }
+        setCart(cart);
+      }
+    });
+
+    // Add to cart logic for catalog cards
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.add-to-cart');
+      if (!btn) return;
+      const card = btn.closest('article');
+      if (!card) return;
+      const img = card.querySelector('img')?.src || '';
+      const title = card.dataset.title || card.querySelector('h3')?.textContent || '';
+      const price = card.dataset.price || card.querySelector('p')?.textContent || '';
+      const cart = getCart();
+      // Check if item already exists (by title and price)
+      const existing = cart.find(item => item.title === title && item.price === price);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ img, title, price, qty: 1 });
+      }
+      setCart(cart);
+      // Optionally, show cart after adding
+      cartBtn.classList.add('ring-2', 'ring-fuchsia-400');
+      setTimeout(() => cartBtn.classList.remove('ring-2', 'ring-fuchsia-400'), 400);
+    });
+
+    // Initialize cart UI on load
+    updateCartUI();
+  </script>
+
+
+
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <header class="mb-8">
+      <h1 class="aa-title text-3xl md:text-4xl font-extrabold">Catalog — <span class="aa-gradient-text">Explore the Collection</span></h1>
+      <p class="text-gray-300 mt-2">Browse action figures, katanas and accessories. Click Quick View to see details and order via Instagram.</p>
+    </header>
+
+    <!-- Category Tabs -->
+    <div class="flex flex-wrap items-center gap-8 mb-8">
+      <button data-category="all" class="aa-tab px-4 py-2 rounded-full bg-fuchsia-600 text-sm font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl ">All</button>
+      <button data-category="figures" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Action Figures</button>
+      <button data-category="katanas" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Katanas</button>
+      <button data-category="keychain" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Keychain</button>
+      <button data-category="bobbleheads" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Bobblehead</button>
+      <button data-category="posters" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Posters</button>
+      <button data-category="qposket" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Q Posket</button>
+    </div>
+
+    <!-- Grid -->
+    <section id="catalog-grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" aria-live="polite">
+      <!-- Example card format: duplicate/replace with your data/images -->
+       <!-- Action Figure -->
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Minto 16-18 Hight Standing Figure Set of 6 pcs.jpg" alt="Naruto figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Minto 16-18 Hight Standing Figure Set of 6 pcs</h3>
+          <p class="text-gray-400">₹2,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Shinchan 6 PCS Figure Set With Black Base 8.5H.jpg" alt="Shinchan figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Shinchan 6 PCS Figure Set With Black Base (8.5H)</h3>
+          <p class="text-gray-400">₹1,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto obito 18cm Standing Figure Set of 6PCS .jpg" alt="Naruto figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Obito 18cm Standing Figure Set of 6PCS</h3>
+          <p class="text-gray-400">₹2,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Dragon Ball Z 16 cm with Base 6pcs Figure Set.jpg" alt="Dragon Ball Z figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Dragon Ball Z 16 cm with Base 6pcs Figure Set</h3>
+          <p class="text-gray-400">₹1,550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Goku VS Majin Bu 21cm Figure (Blister+Box).jpg" alt="Dragon Ball Z figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Goku VS Majin Bu 21cm Figure (Blister+Box)</h3>
+          <p class="text-gray-400">₹2,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Son Goku Standing Figure 30cm (Blister + Box).jpg" alt="Son Goku figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Son Goku Standing Figure 30cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/DBZ 9pcs Set With Base 21.5CM Figure (Blister + Box).jpg" alt="DBZ 9pcs Set With Base 21.5CM Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">DBZ 9pcs Set With Base 21.5CM Figure</h3>
+          <p class="text-gray-400">₹3,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Vegeta Standing On Stone 37.5Cm Figure (Bilister + Box).jpg" alt="Vegeta Standing On Stone 37.5Cm Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Vegeta Standing On Stone 37.5Cm Figure (Blister + Box)</h3>
+          <p class="text-gray-400">₹3,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Harry Potter Siting On Broon Stick 3PCS Figure Set.jpg" alt="Harry Potter Sitting On Broom Stick 3PCS Figure Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Harry Potter Sitting On Broom Stick 3PCS Figure Set</h3>
+          <p class="text-gray-400">₹450</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Vegeta Standing 3Heads 23Cm Figure (Bilister + Box).jpg" alt="Vegeta Standing 3Heads 23Cm Figure (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Vegeta Standing 3Heads 23Cm Figure (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Pain Standing On Stone Base 27cm Figure (Blister + Box).jpg" alt="Pain Standing On Stone Base 27cm Figure (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Pain Standing On Stone Base 27cm Figure (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/One Piece Zoro Premium Action Figure 19CM (Blister + Box).jpg" alt="One Piece Zoro Premium Action Figure 19CM (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">One Piece Zoro Premium Action Figure 19CM (Blister + Box)</h3>
+          <p class="text-gray-400">₹2,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Might Guy Standing with Base 17cm Figure .jpg" alt="Might Guy Standing with Base 17cm Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Might Guy Standing with Base 17cm Figure</h3>
+          <p class="text-gray-400">₹500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Mihawk 14cm Standing Figure (With Box).jpg" alt="Mihawk 14cm Standing Figure (With Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Mihawk 14cm Standing Figure (With Box)</h3>
+          <p class="text-gray-400">₹850</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro With Death God 26Cm Action Figure .jpg" alt="Zoro With Death God 26Cm Action Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro With Death God 26Cm Action Figure</h3>
+          <p class="text-gray-400">₹1,950</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/My Hero Academia Set of 9pcs Action Figure.jpg" alt="My Hero Academia Set of 9pcs Action Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">My Hero Academia Set of 9pcs Action Figure</h3>
+          <p class="text-gray-400">₹1,450</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Holding Thunder Lightning 21cm Action Figure.jpg" alt="Luffy Holding Thunder Lightning 21cm Action Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Holding Thunder Lightning 21cm Action Figure</h3>
+          <p class="text-gray-400">₹1,250</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Minato 4th Gen Figure 28Cm  (Blister + Box).jpg" alt="Minato 4th Gen Figure 28Cm  (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Minato 4th Gen Figure 28Cm  (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Red Joker Siting Figure 15cm .jpg" alt="Red Joker Sitting Figure 15cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Red Joker Sitting Figure 15cm</h3>
+          <p class="text-gray-400">₹550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Attack On Titan Set of 6PCS .jpg" alt="Attack On Titan Set of 6PCS" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Attack On Titan Set of 6PCS</h3>
+          <p class="text-gray-400">₹1,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Ronaldo Red Jersey Standing 21cm Figure.jpg" alt="Ronaldo Red Jersey Standing 21cm Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Ronaldo Red Jersey Standing 21cm Figure</h3>
+          <p class="text-gray-400">₹420</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro Standing 28.5CM Action Figure (Double Head).jpg" alt="Zoro Standing 28.5CM Action Figure (Double Head)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro Standing 28.5CM Action Figure (Double Head)</h3>
+          <p class="text-gray-400">₹750</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Gear 5 with Small Light Lamp .jpg" alt="Luffy Gear 5 with Small Light Lamp" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Gear 5 with Small Light Lamp</h3>
+          <p class="text-gray-400">₹1,350</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                        <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro On Ship 27cm Action Figure (WIth Box).jpg" alt="Zoro On Ship 27cm Action Figure (With Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro On Ship 27cm Action Figure (With Box)</h3>
+          <p class="text-gray-400">₹3,900</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                        <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Godzilla Action Figure Set of 9PCS (8-10CM).jpeg" alt="Godzilla Action Figure Set of 9PCS (8-10CM)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Godzilla Action Figure Set of 9PCS (8-10CM)</h3>
+          <p class="text-gray-400">₹1,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                              <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Godzilla Action Figure Set of 8pcs .jpg" alt="Godzilla Action Figure Set of 8PCS (8-10CM)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Godzilla Action Figure Set of 8PCS (8-10CM)</h3>
+          <p class="text-gray-400">₹1,400</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                              <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Tom & Jerry 12pcs Figure Set -B .jpg" alt="Tom & Jerry 12PCS Figure Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Tom & Jerry 12PCS Figure Set</h3>
+          <p class="text-gray-400">₹1,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                              <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Shinchan Red Crying Moveable Figure (WIth Box).jpg" alt="Shinchan Red Crying Moveable Figure (With Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Shinchan Red Crying Moveable Figure (With Box)</h3>
+          <p class="text-gray-400">₹300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Shinchan Red 10CM Mobile Holder with Box.jpg" alt="Shinchan Red 10CM Mobile Holder with Box" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Shinchan Red 10CM Mobile Holder with Box</h3>
+          <p class="text-gray-400">₹200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Shinchan Green 10CM Mobile Holder with Box.jpg" alt="Shinchan Green 10CM Mobile Holder with Box" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Shinchan Green 10CM Mobile Holder with Box</h3>
+          <p class="text-gray-400">₹200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Fist Standing 20CM Figure (Blister + Box).jpg" alt="Naruto Fist Standing 20CM Figure (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Fist Standing 20CM Figure (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Batman Standing 38cm Action Figure (BOX).jpg" alt="Batman Standing 38cm Action Figure (BOX)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Batman Standing 38cm Action Figure (BOX)</h3>
+          <p class="text-gray-400">₹3,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Roronoa Zoro Asura 20cm.jpg" alt="Roronoa Zoro Asura 20cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Roronoa Zoro Asura 20cm (Box)</h3>
+          <p class="text-gray-400">₹1.750</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Goku Siting on Cloud 13cm .jpg" alt="Goku Sitting on Cloud 13cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Goku Sitting on Cloud 13cm</h3>
+          <p class="text-gray-400">₹550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Goku Smiling Sitting on Cloud 13cm .jpg" alt="Goku Smiling Sitting on Cloud 13cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Goku Smiling Sitting on Cloud 13cm</h3>
+          <p class="text-gray-400">₹550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Demon Slayer 16-18cm (Set of 4PCS).jpg" alt="Demon Slayer 16-18cm (Set of 4PCS)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Demon Slayer 16-18cm (Set of 4PCS)</h3>
+          <p class="text-gray-400">₹2,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Solo Leveling Sung Jin Woo 18cm  (Box).jpg" alt="Solo Leveling Sung Jin Woo 18cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Solo Leveling Sung Jin Woo 18cm (Box)</h3>
+          <p class="text-gray-400">₹1,050</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Solo Leveling Sung Jin Woo Big Head 18cm .jpg" alt="Solo Leveling Sung Jin Woo Big Head 18cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Solo Leveling Sung Jin Woo Big Head 18cm</h3>
+          <p class="text-gray-400">₹950</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/One Piece Standing Set of 8pcs .jpg" alt="One Piece Standing Set of 8pcs" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">One Piece Standing Set of 8pcs</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Madara Set of 6pcs 9-11.jpg" alt="Naruto Madara Set of 6pcs" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Madara Set of 6pcs</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Kakashi Standing 37cm Premium (Blister + Box).jpg" alt="Kakashi Standing 37cm Premium (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Kakashi Standing 37cm Premium (Blister + Box)</h3>
+          <p class="text-gray-400">₹3,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Might Guy Bust 16cm .jpg" alt="Might Guy Bust 16cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Might Guy Bust 16cm</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Kakashi Bust 16cm .jpg" alt="Kakashi Bust 16cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Kakashi Bust 16cm</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto - Sage Mode 2 Bust 16cm .jpg" alt="Naruto - Sage Mode 2 Bust 16cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto - Sage Mode 2 Bust 16cm</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto -Sage Mode Bust 16cm.jpg" alt="Naruto - Sage Mode Bust 16cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto - Sage Mode Bust 16cm</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Senju Hashi Rama Premimum 35cm(Box).jpg" alt="Senju Hashi Rama Premium 35cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Senju Hashi Rama Premium 35cm (Box)</h3>
+          <p class="text-gray-400">₹7,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Boa Premimum Standing 24CM  (Box).jpg" alt="Boa Premium Standing 24CM (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Boa Premium Standing 24CM (Box)</h3>
+          <p class="text-gray-400">₹3,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Son Goku vs Tao Pai Pai 28cm (Blister+Box).jpg" alt="Son Goku vs Tao Pai Pai 28cm (Blister+Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Son Goku vs Tao Pai Pai 28cm (Blister+Box)</h3>
+          <p class="text-gray-400">₹2,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Standing 25CM (Bliste+Box).jpg" alt="Naruto Standing 25CM (Blister+Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Standing 25CM (Blister+Box)</h3>
+          <p class="text-gray-400">₹1,950</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Vegeta Ultra 32cm Premimum WIth Light Base(Blister +Box).jpg" alt="Vegeta Ultra 32cm Premium With Light Base (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Vegeta Ultra 32cm Premium With Light Base (Blister + Box)</h3>
+          <p class="text-gray-400">₹4,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Standing 40CM (Box).jpg" alt="Luffy Standing 40CM (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Standing 40CM (Box)</h3>
+          <p class="text-gray-400">₹1,850</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Vegeta vs Majin Buu 32cm (Box).jpg" alt="Vegeta vs Majin Buu 32cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Vegeta vs Majin Buu 32cm (Box)</h3>
+          <p class="text-gray-400">₹7,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Spider-Man Standing 25cm (Blister+ Box).jpg" alt="Spider-Man Standing 25cm (Blister+ Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Spider-Man Standing 25cm (Blister+ Box)</h3>
+          <p class="text-gray-400">₹1,450</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Standing 19cm Set of 6pcs .jpg" alt="Naruto Standing 19cm Set of 6pcs" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Standing 19cm Set of 6pcs</h3>
+          <p class="text-gray-400">₹2,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/DBZ Shenron See 22cm (Blister +Box).jpg" alt="DBZ Shenron See 22cm (Blister +Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">DBZ Shenron See 22cm (Blister +Box)</h3>
+          <p class="text-gray-400">₹1,800</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Sitting on Couch (Box).jpg" alt="Luffy Sitting on Couch (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Sitting on Couch (Box)</h3>
+          <p class="text-gray-400">₹700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Harry Potter 17cm 6pcs Set.jpg" alt="Harry Potter 17cm 6pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Harry Potter 17cm 6pcs Set</h3>
+          <p class="text-gray-400">₹1,950</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Harry Potter 10cm 6 Figure Set.jpg" alt="Harry Potter 10cm 6 Figure Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Harry Potter 10cm 6 Figure Set</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Harry Potter 9Cm 6pcs Set.jpg" alt="Harry Potter 9Cm 6pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Harry Potter 9Cm 6pcs Set</h3>
+          <p class="text-gray-400">₹1,150</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Joker Sitting Figure 25cm (Box).jpg" alt="Joker Sitting Figure 25cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Joker Sitting Figure 25cm (Box)</h3>
+          <p class="text-gray-400">₹1,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Gojo Walking 11cm (Box).jpg" alt="Gojo Walking 11cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Gojo Walking 11cm (Box)</h3>
+          <p class="text-gray-400">₹650</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Kaiju No.8 Set Of 6pcs .jpg" alt="Kaiju No.8 Set Of 6pcs" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Kaiju No.8 Set Of 6pcs</h3>
+          <p class="text-gray-400">₹1,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro White 29cm (Blister + Box).jpg" alt="Zoro White 29cm (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro White 29cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹2,850</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Maditation 15cm (Blister +Box).jpg" alt="Naruto Maditation 15cm (Blister +Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Maditation 15cm (Blister +Box)</h3>
+          <p class="text-gray-400">₹1,850</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto 9 Tail 15cm (Blister + Box).jpg" alt="Naruto 9 Tail 15cm (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto 9 Tail 15cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto and Sasuke Premiume 29cm (Blister +Box).jpg" alt="Naruto and Sasuke Premiume 29cm (Blister +Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto and Sasuke Premiume 29cm (Blister +Box)</h3>
+          <p class="text-gray-400">₹5,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/DBZ Golden Shenron 22cm (Blister +Box).jpg" alt="DBZ Golden Shenron 22cm (Blister +Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">DBZ Golden Shenron 22cm (Blister +Box)</h3>
+          <p class="text-gray-400">₹2,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Gojo Standing Premimum 42cm  (Box).jpg" alt="Gojo Standing Premium 42cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Gojo Standing Premium 42cm (Box)</h3>
+          <p class="text-gray-400">₹4,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Sitting With Umbrella 13CM (Box).jpg" alt="Luffy Sitting With Umbrella 13CM (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Sitting With Umbrella 13CM (Box)</h3>
+          <p class="text-gray-400">₹900</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Echigo Double Head 33cm (Blister + Box).jpg" alt="Echigo Double Head 33cm (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Echigo Double Head 33cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹3,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Gojo Standing Dual Face 30cm (Blister + Box).jpg" alt="Gojo Standing Dual Face 30cm (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Gojo Standing Dual Face 30cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹6,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Megumi Fushi Guro 13cm Cruched Figure .jpg" alt="Megumi Fushi Guro 13cm Cruched Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Megumi Fushi Guro 13cm Cruched Figure</h3>
+          <p class="text-gray-400">₹600</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Flame 26cm Dual Face (Blister+Box).jpg" alt="Luffy Flame 26cm Dual Face (Blister+Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Flame 26cm Dual Face (Blister+Box)</h3>
+          <p class="text-gray-400">₹1,600</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Gear 5 Drift 16cm (Blister + Box).jpg" alt="Luffy Gear 5 Drift 16cm (Blister + Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Gear 5 Drift 16cm (Blister + Box)</h3>
+          <p class="text-gray-400">₹1,750</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Monkey D.Garp Black 25cm (Box).jpg" alt="Monkey D.Garp Black 25cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Monkey D.Garp Black 25cm (Box)</h3>
+          <p class="text-gray-400">₹1,600</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy and Shanks 19cm.jpeg" alt="Luffy and Shanks 19cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy and Shanks 19cm</h3>
+          <p class="text-gray-400">₹650</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Madara Uchiha 28cm.jpeg" alt="Madara Uchiha 28cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Madara Uchiha 28cm</h3>
+          <p class="text-gray-400">₹1,400</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Astronaut 3pcs Set.jpeg" alt="Astronaut 3pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Astronaut 3pcs Set</h3>
+          <p class="text-gray-400">₹500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Itachi Standing 21cm .jpg" alt="Itachi Standing 21cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Itachi Standing 21cm</h3>
+          <p class="text-gray-400">₹600</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Anya For Ger 13cm (Box).jpg" alt="Anya For Ger 13cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Anya For Ger 13cm (Box)</h3>
+          <p class="text-gray-400">₹700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Joker Sitting Figure 15cm (Box).jpg" alt="Joker Sitting Figure 15cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Joker Sitting Figure 15cm (Box)</h3>
+          <p class="text-gray-400">₹600</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Harry Potter 8cm 6pcs set.jpg" alt="Harry Potter 8cm 6pcs set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Harry Potter 8cm 6pcs set</h3>
+          <p class="text-gray-400">₹1,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Sinchan Cute Figure 6pcs Set .jpg" alt="Sinchan Cute Figure 6pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Sinchan Cute Figure 6pcs Set</h3>
+          <p class="text-gray-400">₹450</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Naruto Miniature 8cm 6pcs Set.jpg" alt="Naruto Miniature 8cm 6pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Naruto Miniature 8cm 6pcs Set</h3>
+          <p class="text-gray-400">₹800</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Gear 5 5pcs Set.jpg" alt="Luffy Gear 5 5pcs Set" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Gear 5 5pcs Set</h3>
+          <p class="text-gray-400">₹1,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/DBZ Vegeta Standing 27cm .jpg" alt="DBZ Vegeta Standing 27cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">DBZ Vegeta Standing 27cm</h3>
+          <p class="text-gray-400">₹1,250</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+                  <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Demon Slayer Akaza 30cm .jpg" alt="Demon Slayer Akaza 30cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Demon Slayer Akaza 30cm</h3>
+          <p class="text-gray-400">₹1,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Sabito Standing 15cm .jpg" alt="Sabito Standing 15cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Sabito Standing 15cm</h3>
+          <p class="text-gray-400">₹300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Inosuke Standing Figure .jpg" alt="Inosuke Standing Figure" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Inosuke Standing Figure</h3>
+          <p class="text-gray-400">₹300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Demon Slayer Akaza 30cm .jpg" alt="Demon Slayer Akaza 30cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Demon Slayer Akaza 30cm</h3>
+          <p class="text-gray-400">₹1,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Laughing Sitting 12cm .jpg" alt="Luffy Laughing Sitting 12cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Laughing Sitting 12cm</h3>
+          <p class="text-gray-400">₹500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Itadori Yuji 24cm (Blister + Box).jpg" alt="Itadori Yuji 24cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Itadori Yuji 24cm</h3>
+          <p class="text-gray-400">₹3,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Gear 5 Moon 28cm (Blister + Box).jpg" alt="Luffy Gear 5 Moon 28cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Gear 5 Moon 28cm</h3>
+          <p class="text-gray-400">₹1,700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/DBZ Gohan 37.5cm Standing with Base.jpg" alt="DBZ Gohan 37.5cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">DBZ Gohan 37.5cm</h3>
+          <p class="text-gray-400">₹3,900</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Gear 5 Standing on Skull 38.5cm  (Blister + Box).jpg" alt="Luffy Gear 5 Standing on Skull 38.5cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Gear 5 Standing on Skull 38.5cm</h3>
+          <p class="text-gray-400">₹4,500</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Goku with Pink Sword 24.5cm (Box).jpg" alt="Goku with Pink Sword 24.5cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Goku with Pink Sword 24.5cm</h3>
+          <p class="text-gray-400">₹1,100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Nine Tail Naruto 35cm (Box).jpg" alt="Nine Tail Naruto 35cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Nine Tail Naruto 35cm (Box)</h3>
+          <p class="text-gray-400">₹11,000</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro Standing On Tornado 37cm (Box).jpg" alt="Zoro Standing On Tornado 37cm (Box)" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro Standing On Tornado 37cm (Box)</h3>
+          <p class="text-gray-400">₹3,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro Standing with Sword 21cm .jpg" alt="Zoro Standing with Sword 21cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro Standing with Sword 21cm</h3>
+          <p class="text-gray-400">₹1,050</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/One Piece 10pcs Set 8-9cm .jpg" alt="One Piece 10pcs Set 8-9cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">One Piece 10pcs Set 8-9cm</h3>
+          <p class="text-gray-400">₹1,550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Big Red Punch 25cm .jpg" alt="Luffy Big Red Punch 25cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Big Red Punch 25cm</h3>
+          <p class="text-gray-400">₹2,400</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Gojo Crouched 15cm .jpg" alt="Gojo Crouched 15cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Gojo Crouched 15cm</h3>
+          <p class="text-gray-400">₹550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Sitting 10cm White .jpg" alt="Luffy Sitting 10cm White" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Sitting 10cm White</h3>
+          <p class="text-gray-400">₹300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Demon Slayer Akaza 30cm .jpg" alt="Demon Slayer Akaza 30cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Demon Slayer Akaza 30cm</h3>
+          <p class="text-gray-400">₹1,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Katana -->
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="katanas" data-desc="Hand-forged samurai katana. Full-tang. Includes saya." data-title="Samurai Katana" data-price="₹3,000">
+        <img src="images/Katana/3 Layar Wooden Wall Mount Stand .jpg" alt="3 Layar Wooden Wall Mount Stand" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">3 Layar Wooden Wall Mount Stand</h3>
+          <p class="text-gray-400">₹700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+                    </div>
+        </div>
+      </article>
+      <!-- Keychain -->
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/RCB Virat T-Shirt 3D Key Chain.jpg" alt="RCB Virat T-Shirt 3D Key Chain" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">RCB Virat T-Shirt 3D Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Squied Game Face Change Key Chain .jpg" alt="Squid Game Face Change Key Chain" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Squid Game Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
+        </div>
+      </article>
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Pink Kitty Face Change Key chan.jpg" alt="Pink Kitty Face Change Key Chain" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Pink Kitty Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Doremon Face Change Key Chain.jpg" alt="Doremon Face Change Key Chain" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Doremon Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
+        </div>
+      </article>
+
+
+      <!-- Add more cards as needed -->
+    </section>
+  </main>
+
+  <!-- Quick View Modal (shared UI & logic) -->
+  <div id="aaModal" role="dialog" aria-hidden="true" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4 aa-modal">
+    <div class="relative max-w-4xl w-full bg-gray-900 rounded-2xl overflow-hidden aa-neon-border aa-modal-panel">
+      <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-white z-20">✖</button>
+      <div class="flex flex-col md:flex-row">
+        <!-- Left: media gallery -->
+        <div class="md:w-1/2 bg-black/60 p-4 flex flex-col gap-3">
+          <div class="flex-1 flex items-center justify-center">
+            <div id="mMedia" class="w-full h-72 md:h-96 bg-gray-800 overflow-hidden rounded-lg flex items-center justify-center">
+              <img id="mMainImg" src="" alt="" class="object-contain w-full h-full">
+              <video id="mMainVideo" controls class="hidden w-full h-full object-contain"></video>
+            </div>
+          </div>
+          <div id="mThumbs" class="flex gap-2 overflow-x-auto md:flex-col md:overflow-y-auto md:h-24"></div>
+        </div>
+
+        <!-- Right: product details -->
+        <div class="md:w-1/2 p-6">
+          <h3 id="mTitle" class="text-2xl font-bold aa-title"></h3>
+          <p id="mPrice" class="text-gray-300 mt-2 text-lg"></p>
+          <p id="mDesc" class="text-gray-400 mt-4"></p>
+          <div id="mOptions" class="mt-4 space-y-3">
+            <!-- populated dynamically (size/variant selectors, etc) -->
+          </div>
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <a id="orderLink" href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="flex-1 text-center py-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold aa-glow">DM to Order</a>
+            <button id="addToCartModal" class="flex-1 py-3 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="border-t border-white/10 mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-6 text-sm text-gray-400 flex items-center justify-between">
+      <p>© 2025 Anime Avenue</p>
+      <div class="flex items-center gap-6">
+        <a href="Index.html#home" class="hover:text-fuchsia-400">Home</a>
+        <a href="Index.html#contact" class="hover:text-fuchsia-400">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tabs filtering (same logic as Index)
+    const tabs = document.querySelectorAll('.aa-tab');
+    const cards = document.querySelectorAll('#catalog-grid article');
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.remove('bg-fuchsia-600','text-white'));
+      t.classList.add('bg-fuchsia-600','text-white');
+      const cat = t.dataset.category;
+      cards.forEach(c => {
+        const show = cat === 'all' || c.dataset.category === cat;
+        c.classList.toggle('hidden', !show);
+      });
+    }));
+
+    // Modal handling and responsive two-column layout (media gallery left, details right)
+    const modal = document.getElementById('aaModal');
+    const closeModal = document.getElementById('closeModal');
+    const mMainImg = document.getElementById('mMainImg');
+    const mMainVideo = document.getElementById('mMainVideo');
+    const mThumbs = document.getElementById('mThumbs');
+    const mTitle = document.getElementById('mTitle');
+    const mPrice = document.getElementById('mPrice');
+    const mDesc = document.getElementById('mDesc');
+    const orderLink = document.getElementById('orderLink');
+    const addToCartModal = document.getElementById('addToCartModal');
+
+    function setMainMedia(src){
+      const isVideo = typeof src === 'string' && src.match(/\.(mp4|webm|ogg)(\?|$)/i);
+      if(isVideo){
+        if (mMainImg) mMainImg.classList.add('hidden');
+        if (mMainVideo) {
+          mMainVideo.src = src;
+          mMainVideo.classList.remove('hidden');
+          mMainVideo.play().catch(()=>{});
+        }
+      } else {
+        if (mMainVideo) {
+          mMainVideo.pause();
+          mMainVideo.classList.add('hidden');
+          mMainVideo.removeAttribute('src');
+        }
+        if (mMainImg) {
+          mMainImg.src = src;
+          mMainImg.classList.remove('hidden');
+        }
+      }
+    }
+
+    function buildThumbs(media){
+      if (!mThumbs) return;
+      mThumbs.innerHTML = '';
+      media.forEach((src, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'flex-none rounded-lg overflow-hidden border-2 border-transparent hover:border-fuchsia-500';
+        btn.style.width = '72px';
+        btn.style.height = '56px';
+        if(src.match(/\.(mp4|webm|ogg)(\?|$)/i)){
+          const v = document.createElement('video');
+          v.src = src;
+          v.muted = true;
+          v.playsInline = true;
+          v.className = 'w-full h-full object-cover';
+          v.addEventListener('mouseenter', ()=> v.play());
+          v.addEventListener('mouseleave', ()=> { v.pause(); v.currentTime = 0; });
+          btn.appendChild(v);
+        } else {
+          const im = document.createElement('img');
+          im.src = src;
+          im.alt = 'thumb';
+          im.className = 'w-full h-full object-cover';
+          btn.appendChild(im);
+        }
+        btn.addEventListener('click', ()=> setMainMedia(src));
+        mThumbs.appendChild(btn);
+        if(i === 0) setMainMedia(src);
+      });
+    }
+
+    // delegate from grid
+    const grid = document.getElementById('catalog-grid');
+    if (grid) {
+      grid.addEventListener('click', (e) => {
+        const btn = e.target.closest('.open-modal');
+        if (!btn) return;
+        const card = btn.closest('article');
+        if (!card) return;
+
+        let media = [];
+        if(card.dataset.images){
+          try { media = JSON.parse(card.dataset.images); } catch(err){ media = [card.dataset.images]; }
+        }
+        if(!media.length){
+          const imgEl = card.querySelector('img');
+          if(imgEl) media = [ imgEl.src || imgEl.getAttribute('src') ];
+        }
+
+        buildThumbs(media);
+
+        if (mTitle) mTitle.textContent = card.dataset.title || card.querySelector('h3')?.textContent || '';
+        if (mPrice) mPrice.textContent = card.dataset.price || card.querySelector('p')?.textContent || '';
+        if (mDesc) mDesc.textContent = card.dataset.desc || '';
+
+        if (orderLink) orderLink.href = 'https://www.instagram.com/_.anime.avenue._/';
+
+        if (modal) {
+          modal.classList.remove('hidden');
+          modal.classList.add('flex');
+          void modal.offsetWidth;
+          modal.classList.add('aa-modal-visible');
+          modal.setAttribute('aria-hidden','false');
+          document.body.style.overflow = 'hidden';
+          setTimeout(()=> closeModal.focus(), 120);
+        }
+      });
+    }
+
+    function closeModalFn(){
+      if (!modal) return;
+      modal.classList.remove('aa-modal-visible');
+      modal.setAttribute('aria-hidden','true');
+      document.body.style.overflow = '';
+      const onEnd = (ev) => {
+        if (ev.target !== modal || ev.propertyName !== 'opacity') return;
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        modal.removeEventListener('transitionend', onEnd);
+      };
+      modal.addEventListener('transitionend', onEnd, { passive: true });
+      setTimeout(() => {
+        if (!modal.classList.contains('aa-modal-visible')) {
+          modal.classList.add('hidden');
+          modal.classList.remove('flex');
+        }
+      }, 400);
+      if (mMainVideo) { mMainVideo.pause(); mMainVideo.removeAttribute('src'); }
+      if (mMainImg) mMainImg.src = '';
+      if (mThumbs) mThumbs.innerHTML = '';
+    }
+
+    if (closeModal) closeModal.addEventListener('click', closeModalFn);
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModalFn(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeModalFn(); });
+
+    // Mobile menu simple toggle (reused)
+    const menuBtn = document.getElementById('menuBtn');
+    const mobilePanel = document.getElementById('mobilePanel');
+    if (menuBtn && mobilePanel) {
+      menuBtn.addEventListener('click', ()=>{
+        const open = mobilePanel.classList.contains('opacity-100');
+        mobilePanel.classList.toggle('opacity-0', open);
+        mobilePanel.classList.toggle('opacity-100', !open);
+        mobilePanel.classList.toggle('scale-y-0', open);
+        mobilePanel.classList.toggle('scale-y-100', !open);
+        mobilePanel.classList.toggle('pointer-events-none', open);
+      });
+    }
+
+    // helper: read logged in user
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem('aa_user') || 'null'); } catch { return null; }
+    }
+
+    // Build & open an invoice email to client + user
+    async function sendInvoiceReal(exampleVideo) {
+      const token = localStorage.getItem('aa_token');
+      if (!token) {
+        localStorage.setItem('aa_pending_checkout', 'true');
+        localStorage.setItem('aa_pending_video', exampleVideo || '');
+        alert('Please sign in to continue checkout');
+        location.href = 'login.html';
+        return;
+      }
+      const cart = JSON.parse(localStorage.getItem('aa_cart') || '[]');
+      if (!cart.length) { alert('Cart empty'); return; }
+      const resp = await fetch('http://localhost:3000/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ cart, exampleVideo })
+      });
+      const data = await resp.json();
+      if (data.error) {
+        alert('Checkout failed: ' + data.error);
+        return;
+      }
+      // success: order saved and email sent (or preview URL returned for Ethereal)
+      alert('Order placed. Invoice emailed. ' + (data.preview ? 'Preview: ' + data.preview : ''));
+      // clear cart
+      localStorage.removeItem('aa_cart');
+      // optionally redirect to order page
+      location.href = 'Index.html';
+    }
+
+    // attach to checkout button
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    if (checkoutBtn) checkoutBtn.addEventListener('click', ()=>{
+      const exampleVideo = prompt('Example video URL to include (optional):') || '';
+      sendInvoiceReal(exampleVideo);
+    });
+
+    // Auto-run pending checkout after login
+    try {
+      if (localStorage.getItem('aa_just_logged_in') === 'true') {
+        localStorage.removeItem('aa_just_logged_in');
+        const pending = localStorage.getItem('aa_pending_checkout') === 'true';
+        const exampleVideo = localStorage.getItem('aa_pending_video') || '';
+        if (pending) {
+          localStorage.removeItem('aa_pending_checkout');
+          localStorage.removeItem('aa_pending_video');
+          setTimeout(()=> sendInvoiceReal(exampleVideo), 250);
+        }
+      }
+    } catch(e){}
+  ; // DOMContentLoaded
+  </script>
+</body>
+</html>

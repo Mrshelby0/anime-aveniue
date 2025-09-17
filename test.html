@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anime Transition</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Transition Overlay */
+    #page-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Slash effect */
+    .slash {
+      position: relative;
+      width: 200px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #ff0000, transparent);
+      transform: scaleX(0);
+      animation: slash 0.6s ease forwards;
+    }
+
+    @keyframes slash {
+      0% { transform: scaleX(0) rotate(-20deg); }
+      50% { transform: scaleX(1.5) rotate(-20deg); }
+      100% { transform: scaleX(0) rotate(-20deg); }
+    }
+
+    /* Show overlay */
+    #page-transition.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+  </style>
+</head>
+<body>
+  <div id="page-transition">
+    <div class="slash"></div>
+  </div>
+
+  <h1>Home Page</h1>
+  <a href="catalog.html" class="link">Go to Catalog</a>
+
+  <script>
+    const transition = document.getElementById("page-transition");
+    const links = document.querySelectorAll("a.link");
+
+    links.forEach(link => {
+      link.addEventListener("click", e => {
+        e.preventDefault();
+        transition.classList.add("active");
+
+        setTimeout(() => {
+          window.location.href = link.href;
+        }, 700); // Delay matches slash animation
+      });
+    });
+
+    window.addEventListener("pageshow", () => {
+      transition.classList.remove("active");
+    });
+  </script>
+</body>
+</html>

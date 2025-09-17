@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anime Avenue — Catalog</title>
+
+  <!-- Fonts & Tailwind (matches Index.html) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="transition.css">
+  <style>
+    :root{
+      --aa-primary:#a855f7;
+      --aa-secondary:#22d3ee;
+      --aa-hot:#f472b6;
+    }
+    html,body{font-family:'Outfit',system-ui,Segoe UI,Roboto,Helvetica,Arial}
+    .aa-title{font-family:'Oxanium',system-ui}
+    .aa-glow{filter: drop-shadow(0 0 12px rgba(168,85,247,.6)) drop-shadow(0 0 32px rgba(34,211,238,.25));}
+    .aa-neon-border{position:relative}
+    .aa-neon-border:before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 1rem;
+      pointer-events: none;
+      z-index: 1;
+      border: 3px solid transparent;
+      background: linear-gradient(135deg, var(--aa-primary), var(--aa-secondary), var(--aa-hot)) border-box;
+      -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+    .aa-card{transition:transform .35s ease, box-shadow .35s ease}
+    .aa-card:hover{transform:translateY(-6px) scale(1.02)}
+    .aa-gradient-text{background:linear-gradient(90deg,var(--aa-secondary),var(--aa-primary),var(--aa-hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+    /* Modal transition styles */
+    #aaModal.aa-modal { opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+    #aaModal.aa-modal.aa-modal-visible { opacity: 1; pointer-events: auto; }
+    /* Panel (inner) scale/fade */
+    #aaModal .aa-modal-panel { transform: translateY(8px) scale(.98); opacity: 0; transition: transform 260ms cubic-bezier(.2,.9,.2,1), opacity 260ms ease; }
+    #aaModal.aa-modal-visible .aa-modal-panel { transform: translateY(0) scale(1); opacity: 1; }
+    /* make thumbnails slightly interactive */
+    #mThumbs button { transition: transform 120ms ease, box-shadow 120ms ease; }
+    #mThumbs button:hover { transform: translateY(-4px); box-shadow: 0 6px 18px rgba(168,85,247,.12); }
+  </style>
+</head>
+<body class="bg-gray-950 text-white">
+  <script src="transition.js"></script>
+  <!-- Header (same theme as Index) -->
+  <header class="sticky top-0 z-40 bg-gray-900/80 backdrop-blur border-b border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
+      <a href="Index.html" class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-400 aa-glow overflow-hidden">
+          <img src="images/Katana/anime.jpg" alt="Logo" class="h-full w-full object-cover rounded-xl">
+        </div>
+        <div class="aa-title text-xl font-extrabold tracking-wide">ANIME <span class="aa-gradient-text">AVENUE</span></div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="Index.html#home" class="text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Home</a>
+        <a href="Catalog.html" class="hover:text-fuchsia-400 font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Catalog</a>
+        <a href="About-Us.html" class="hover:text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">About-Us</a>
+      </nav>
+      <!-- Log-In Button & Cart Button Grouped -->
+      <div class="flex items-center gap-2">
+        <!-- Cart Button (icon) -->
+        <button id="cartBtn" class="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-fuchsia-600 aa-glow hover:bg-black hover:scale-110 transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-500" title="View Cart">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span id="cartCount" class="absolute -top-1 -right-1 bg-fuchsia-400 text-xs text-white rounded-full px-1.5 py-0.5 font-bold hidden">0</span>
+        </button>
+      </div>
+        <!-- Mobile Menu Button -->
+        <button id="menuBtn" class="md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-white/10">☰</button>
+    </div>
+  </header>
+  <!-- Mobile Navigation Panel -->
+  <nav id="mobilePanel" class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-start pt-24 space-y-6 opacity-0 scale-y-0 pointer-events-none transition-all duration-300 md:hidden">
+    <a href="Index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
+    <a href="Catalog.html" class="text-lg font-semibold text-white" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Catalog</a>
+    <a href="Index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
+    <a href="Index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
+    <a href="login.html" target="_blank" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Log-In</a>
+    <button onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';" class="mt-8 px-6 py-2 rounded-full bg-fuchsia-600 text-white font-semibold">Close</button>
+  </nav>
+
+  <!-- Cart Slide-Over -->
+  <div id="cartPanel" class="fixed inset-0 z-50 flex justify-end bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-gray-900 h-full shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+      <button id="closeCart" class="absolute top-3 right-3 text-gray-400 hover:text-white z-20 text-2xl" aria-label="Close Cart">✖</button>
+      <div class="p-6 border-b border-white/10 flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-fuchsia-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <span class="aa-title text-xl font-bold">Your Cart</span>
+      </div>
+      <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4 text-gray-200">
+        <!-- Cart items will be rendered here -->
+      </div>
+      <div class="p-6 border-t border-white/10">
+        <button id="checkoutBtn" class="block w-full text-center py-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold aa-glow">Checkout — Email Invoice</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Cart Slide-Over Logic with Quantity Controls ---
+    const cartBtn = document.getElementById('cartBtn');
+    const cartPanel = document.getElementById('cartPanel');
+    const closeCart = document.getElementById('closeCart');
+    const cartCount = document.getElementById('cartCount');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+
+    // Simple cart state (localStorage for persistence)
+    function getCart() {
+      try {
+        return JSON.parse(localStorage.getItem('aa_cart') || '[]');
+      } catch { return []; }
+    }
+    function setCart(cart) {
+      localStorage.setItem('aa_cart', JSON.stringify(cart));
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      // Count total items (sum of quantities)
+      const totalItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+      cartCount.textContent = totalItems;
+      cartCount.classList.toggle('hidden', totalItems === 0);
+
+      // Render cart items
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="text-gray-400 text-center py-12">Your cart is empty.</div>';
+        cartTotal.textContent = '₹0';
+        return;
+      }
+      let total = 0;
+      cartItems.innerHTML = cart.map((item, idx) => {
+        const priceNum = parseInt(item.price.replace(/[^\d]/g, '')) || 0;
+        total += priceNum * (item.qty || 1);
+        return `
+          <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-3">
+            <img src="${item.img}" alt="${item.title}" class="w-16 h-16 object-cover rounded-lg border border-white/10">
+            <div class="flex-1">
+              <div class="font-semibold">${item.title}</div>
+              <div class="text-fuchsia-400">${item.price}</div>
+              <div class="flex items-center gap-2 mt-1">
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="minus" aria-label="Decrease quantity">−</button>
+                <span class="inline-block w-6 text-center">${item.qty || 1}</span>
+                <button class="cartQtyBtn px-2 py-0.5 rounded bg-gray-700 hover:bg-fuchsia-600 text-white text-lg" data-idx="${idx}" data-action="plus" aria-label="Increase quantity">+</button>
+              </div>
+            </div>
+            <button class="removeCartItem text-gray-400 hover:text-fuchsia-400 text-xl" data-idx="${idx}" title="Remove">&times;</button>
+          </div>
+        `;
+      }).join('');
+      cartTotal.textContent = `₹${total}`;
+    }
+
+    // Open cart panel
+    cartBtn.addEventListener('click', () => {
+      cartPanel.classList.remove('pointer-events-none', 'opacity-0');
+      setTimeout(() => {
+        cartPanel.classList.add('opacity-100');
+        cartPanel.querySelector('div').classList.remove('translate-x-full');
+        cartPanel.querySelector('div').classList.add('translate-x-0');
+      }, 10);
+      document.body.style.overflow = 'hidden';
+      updateCartUI();
+    });
+
+    // Close cart panel
+    function closeCartPanel() {
+      cartPanel.classList.remove('opacity-100');
+      cartPanel.querySelector('div').classList.remove('translate-x-0');
+      cartPanel.querySelector('div').classList.add('translate-x-full');
+      setTimeout(() => {
+        cartPanel.classList.add('pointer-events-none', 'opacity-0');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+    closeCart.addEventListener('click', closeCartPanel);
+    cartPanel.addEventListener('mousedown', (e) => {
+      if (e.target === cartPanel) closeCartPanel();
+    });
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && cartPanel.classList.contains('opacity-100')) closeCartPanel();
+    });
+
+    // Remove item from cart
+    cartItems.addEventListener('click', (e) => {
+      if (e.target.classList.contains('removeCartItem')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const cart = getCart();
+        cart.splice(idx, 1);
+        setCart(cart);
+      }
+      // Quantity plus/minus
+      if (e.target.classList.contains('cartQtyBtn')) {
+        const idx = parseInt(e.target.dataset.idx, 10);
+        const action = e.target.dataset.action;
+        const cart = getCart();
+        if (!cart[idx]) return;
+        cart[idx].qty = cart[idx].qty || 1;
+        if (action === 'plus') {
+          cart[idx].qty += 1;
+        } else if (action === 'minus') {
+          if (cart[idx].qty > 1) {
+            cart[idx].qty -= 1;
+          } else {
+            // Remove item if qty goes below 1
+            cart.splice(idx, 1);
+          }
+        }
+        setCart(cart);
+      }
+    });
+
+    // Add to cart logic for catalog cards
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.add-to-cart');
+      if (!btn) return;
+      const card = btn.closest('article');
+      if (!card) return;
+      const img = card.querySelector('img')?.src || '';
+      const title = card.dataset.title || card.querySelector('h3')?.textContent || '';
+      const price = card.dataset.price || card.querySelector('p')?.textContent || '';
+      const cart = getCart();
+      // Check if item already exists (by title and price)
+      const existing = cart.find(item => item.title === title && item.price === price);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        cart.push({ img, title, price, qty: 1 });
+      }
+      setCart(cart);
+      // Optionally, show cart after adding
+      cartBtn.classList.add('ring-2', 'ring-fuchsia-400');
+      setTimeout(() => cartBtn.classList.remove('ring-2', 'ring-fuchsia-400'), 400);
+    });
+
+    // Initialize cart UI on load
+    updateCartUI();
+  </script>
+
+  <!-- Hero -->
+  <section id="home" class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-gray-900 via-gray-950 to-black"></div>
+    <canvas id="aaParticles" class="absolute inset-0 opacity-50"></canvas>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 py-24 md:py-32 grid md:grid-cols-2 gap-10 items-center">
+      <div>
+        <h1 class="aa-title text-5xl md:text-6xl font-extrabold leading-tight aa-glow">Collect. Wield. Display.</h1>
+        <p class="mt-5 text-lg text-gray-300 max-w-prose">Premium <span class="aa-gradient-text font-semibold">Action Figures</span>, legendary <span class="aa-gradient-text font-semibold">Katanas</span>, and curated <span class="aa-gradient-text font-semibold">Anime Accessories</span>. Built for fans. Priced for collectors.</p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="Catalog.html" class="px-6 py-3 rounded-full bg-fuchsia-600 hover:bg-black hover:scale-110 transition-all duration-300 aa-glow hover:shadow-xl hover:shadow-fuchsia-500 font-semibold">Explore Catalog</a>
+          <a href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="px-6 py-3 rounded-full border border-white/15 hover:shadow-xl hover:shadow-fuchsia-500 transition-all hover:bg-fuchsia-500 duration-300 hover:scale-110 hover:border-fuchsia-400/40">Follow on Instagram</a>
+        </div>
+      </div>
+      <!-- Image Slider -->
+      <div class="aa-tilt">
+        <div class="aa-card-inner aa-neon-border rounded-2xl bg-gradient-to-b from-gray-900 to-gray-950 p-2 hover:shadow-fuchsia-500 hover:shadow-2xl transition-all duration-1000 ease-in-700">
+          <div id="hero-slider" class="relative w-full aspect-[4/3] overflow-hidden rounded-xl">
+            <img src="images/Katana/katana.jpg" alt="Katana" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-100 transition-opacity duration-700" style="z-index:2;">
+            <img src="images/Key Chain/dor.jpg" alt="Keychain" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:1;">
+            <img src="images/Action Figure/zoro-removebg-preview.png" alt="Action Figure" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:0;">
+            <button id="slider-prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-1 hover:bg-fuchsia-600 transition" aria-label="Previous slide" style="z-index:10;">&#8592;</button>
+            <button id="slider-next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-1 hover:bg-fuchsia-600 transition" aria-label="Next slide" style="z-index:10;">&#8594;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <script>
+    // Hero image slider
+    (function() {
+      const slides = document.querySelectorAll('#hero-slider .slider-img');
+      const prevBtn = document.getElementById('slider-prev');
+      const nextBtn = document.getElementById('slider-next');
+      if (!slides.length) return;
+      let idx = 0, timer;
+      function showSlide(i) {
+        slides.forEach((img, j) => {
+          img.classList.toggle('opacity-100', j === i);
+          img.classList.toggle('opacity-0', j !== i);
+        });
+      }
+      function next() { idx = (idx + 1) % slides.length; showSlide(idx); }
+      function prev() { idx = (idx - 1 + slides.length) % slides.length; showSlide(idx); }
+      nextBtn.addEventListener('click', () => { next(); reset(); });
+      prevBtn.addEventListener('click', () => { prev(); reset(); });
+      function reset() {
+        clearInterval(timer);
+        timer = setInterval(next, 3500);
+      }
+      showSlide(idx);
+      timer = setInterval(next, 3500);
+    })();
+  </script>
+
+  <!-- Category Tabs -->
+  <section class="max-w-7xl mx-auto px-4 pt-12">
+    <div class=" flex flex-wrap items-center justify-center gap-8 mb-8">
+      <button data-category="all" class="aa-tab px-4 py-2 rounded-full bg-fuchsia-600 text-sm font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl ">All</button>
+      <button data-category="figures" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Action Figures</button>
+      <button data-category="katanas" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Katanas</button>
+      <button data-category="accessories" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Accessories</button>
+      <button data-category="bobblehead" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Bobblehead</button>
+      <button data-category="posters" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Posters</button>
+      <button data-category="qposket" class="aa-tab px-4 py-2 rounded-full text-sm hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl">Q Posket</button>
+    </div>
+  </section>
+
+  <!-- Catalog Grid -->
+  <section id="catalog" class="max-w-7xl mx-auto px-4 py-12">
+    <h2 class="aa-title text-3xl md:text-4xl font-extrabold text-center mb-10">Our <span class="aa-gradient-text">Collection</span></h2>
+    <div id="grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="THIS IS A DESCRIPTION MAKE SURE YOU READ SKIBIDI/DADDY" data-images='["img1.jpg","img2.jpg"]'>
+        <img src="images/Action Figure/Batman.jpg" class="w-full h-56 object-cover" alt="Figure" />
+        <div class="p-4">
+          <h3 class="font-semibold">Batman Action Figure</h3>
+          <p class="text-gray-400">₹550</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="katanas">
+        <img src="images/Katana/sanime.jpg" class="w-full h-56 object-cover" alt="Katana" />
+        <div class="p-4">
+          <h3 class="font-semibold">Sanime Katana</h3>
+          <p class="text-gray-400">₹3,000</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="accessories">
+        <img src="images/Key Chain/dor.jpg" class="w-full h-52 rounded-2xl object-cover" alt="Keychain" />
+        <div class="p-4">
+          <h3 class="font-semibold">Doraemon Keychain</h3>
+          <p class="text-gray-400">₹100</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="posters">
+        <img src="images/poster/draiganball.jpg" class="w-full h-56 object-cover" alt="Poster" />
+        <div class="p-4">
+          <h3 class="font-semibold">draiganball Poster (A3)</h3>
+          <p class="text-gray-400">₹199</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="bobblehead">
+        <img src="images/bobblehead/anya.jpg" class="w-full h-56 object-cover" alt="Figure" />
+        <div class="p-4">
+          <h3 class="font-semibold">Anya Bobblehead</h3>
+          <p class="text-gray-400">₹799</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+    <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="qposket">
+        <img src="images/posket/captain america.jpg" class="w-full h-56 object-cover" alt="Katana" />
+        <div class="p-4">
+          <h3 class="font-semibold">Captain America Posket</h3>
+          <p class="text-gray-400">₹5,499</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="accessories">
+        <img src="images/Robe/hokaje.jpg" class="w-full h-56 object-cover" alt="Accessory" />
+        <div class="p-4">
+          <h3 class="font-semibold">Hokaje Robe</h3>
+          <p class="text-gray-400">₹249</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="posters">
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=900" class="w-full h-56 object-cover" alt="Poster" />
+        <div class="p-4">
+          <h3 class="font-semibold">Limited Art Print</h3>
+          <p class="text-gray-400">₹399</p>
+          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+        </div>
+      </article>
+    </div>
+    <div class="flex justify-center mt-10 relative">
+      <a href="Catalog.html" class="relative inline-block px-10 py-4 font-extrabold text-lg aa-title bg-gradient-to-r from-fuchsia-600 via-purple-500 to-cyan-400 text-white shadow-lg rounded-full transition-all duration-300 hover:scale-110 hover:shadow-fuchsia-500 hover:shadow-2xl border-2 border-fuchsia-500 hover:bg-black "
+      <span class="relative z-10 flex items-center gap-2">
+        <span class="animate-bounce">✨</span>
+        See More
+        <span class="animate-bounce" style="animation-delay:.2s">🍥</span>
+      </span>
+      <span class="absolute inset-0 rounded-full border-2 border-fuchsia-500 animate-pulse pointer-events-none"></span>
+      </a>
+      <!-- Anime sparkle effect -->
+      <svg class="absolute -top-3 -left-3 w-8 h-8 text-fuchsia-400 animate-ping" fill="none" viewBox="0 0 24 24">
+      <path d="M12 2l2.09 6.26L20 9.27l-5 3.64L16.18 20 12 16.77 7.82 20 9 12.91l-5-3.64 5.91-.91z" fill="currentColor"/>
+      </svg>
+      <svg class="absolute -bottom-3 -right-3 w-7 h-7 text-cyan-400 animate-pulse" fill="none" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" fill="currentColor" opacity="0.7"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Featured strip -->
+  <section id="featured" class="py-20 bg-gradient-to-b from-gray-950 to-black border-y border-white/5">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="aa-neon-border rounded-2xl p-6 bg-gray-900/70">
+        <div class="grid md:grid-cols-3 gap-5 items-center">
+          <div>
+            <h3 class="aa-title text-2xl font-extrabold mb-1">Weekly Drop</h3>
+            <p class="text-gray-300">Fresh arrivals every week. DM for preorders and bundle deals.</p>
+          </div>
+          <div class="md:col-span-2 grid sm:grid-cols-2 gap-4">
+            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Action Figure/zoro.jpg" alt="Drop 1"></div>
+            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Katana/katana.jpg" alt="Drop 2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About & Contact -->
+  <section id="about" class="max-w-7xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <h2 class="aa-title text-3xl md:text-4xl font-extrabold">About Anime Avenue</h2>
+      <p class="mt-4 text-gray-300 leading-relaxed">Born from fandom, built for collectors. We curate quality figures, functional and decorative katanas, and everyday accessories — keeping prices fair and service personal. Most orders happen via Instagram DMs for quick responses and custom bundles.</p>
+    </div>
+    <div class="aa-neon-border rounded-2xl p-6 bg-gray-900/70">
+      <h3 class="font-semibold mb-2">Contact</h3>
+      <ul class="space-y-2 text-gray-300">
+        <li>Instagram: <a class="text-fuchsia-400 hover:underline" href="https://www.instagram.com/_.anime.avenue._/" target="_blank">@_.anime.avenue._</a></li>
+        <li>Email: <span class="text-gray-400">animeavenue.support@example.com</span></li>
+      </ul>
+      <a href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="mt-4 inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 aa-glow font-semibold">DM Now</a>
+    </div>
+  </section>
+
+  <footer id="contact" class="border-t border-white/10">
+    <div class="max-w-7xl mx-auto px-4 py-8 text-sm text-gray-400 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p>© 2025 Anime Avenue. All rights reserved.</p>
+      <div class="flex items-center gap-6">
+        <a href="#home" class="hover:text-fuchsia-400">Top</a>
+        <a href="#catalog" class="hover:text-fuchsia-400">Catalog</a>
+        <a href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="hover:text-fuchsia-400">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Quick View Modal -->
+  <div id="aaModal" role="dialog" aria-hidden="true" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50 p-4">
+    <div class="relative max-w-md w-full bg-gray-900 rounded-2xl overflow-hidden aa-neon-border flex flex-col">
+      <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-white">✖</button>
+      <img id="mImg" src="" alt="Product" class="w-full h-64 object-cover">
+      <div class="p-5">
+        <h3 id="mTitle" class="text-lg font-bold"></h3>
+        <p id="mPrice" class="text-gray-300 mb-2"></p>
+        <p id="mDesc" class="text-gray-400 mb-4"></p>
+        <a href="https://www.instagram.com/_.anime.avenue._/" target="_blank" class="w-full block text-center py-3 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold aa-glow">DM to Order</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mobile menu
+    const menuBtn = document.getElementById('menuBtn');
+    const mobilePanel = document.getElementById('mobilePanel');
+    menuBtn.addEventListener('click', ()=>{
+      const open = mobilePanel.classList.contains('opacity-100');
+      mobilePanel.classList.toggle('opacity-0', open);
+      mobilePanel.classList.toggle('opacity-100', !open);
+      mobilePanel.classList.toggle('scale-y-0', open);
+      mobilePanel.classList.toggle('scale-y-100', !open);
+      mobilePanel.classList.toggle('pointer-events-none', open);
+    });
+
+    // Tabs filtering
+    const tabs = document.querySelectorAll('.aa-tab');
+    const cards = document.querySelectorAll('#grid [data-category]');
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.remove('bg-fuchsia-600'));
+      t.classList.add('bg-fuchsia-600');
+      const cat = t.dataset.category;
+      cards.forEach(c=>{
+        const show = cat==='all' || c.dataset.category===cat;
+        c.classList.toggle('hidden', !show);
+      });
+    }));
+
+    // Modal handling — use event delegation so catalog buttons are always connected
+    const modal = document.getElementById('aaModal');
+    const closeModal = document.getElementById('closeModal');
+    const mImg = document.getElementById('mImg');
+    const mTitle = document.getElementById('mTitle');
+    const mPrice = document.getElementById('mPrice');
+    const mDesc = document.getElementById('mDesc');
+
+    // Delegate from the grid so dynamically added/changed cards still work
+    const grid = document.getElementById('grid');
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.open-modal');
+      if (!btn) return;
+      const card = btn.closest('article');
+      if (!card) return;
+      const img = card.querySelector('img');
+      mImg.src = img ? (img.src || img.getAttribute('src')) : '';
+      mTitle.textContent = card.querySelector('h3')?.textContent || card.dataset.title || btn.dataset.title || '';
+      mPrice.textContent = card.querySelector('p')?.textContent || card.dataset.price || btn.dataset.price || '';
+      mDesc.textContent = card.dataset.desc || btn.dataset.desc || '';
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      modal.setAttribute('aria-hidden', 'false');
+      // lock scroll and focus the close button for accessibility
+      document.body.style.overflow = 'hidden';
+      closeModal.focus();
+    });
+
+    function closeModalFn(){
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    closeModal.addEventListener('click', closeModalFn);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeModalFn(); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModalFn(); });
+  </script>
+
+  <!-- Particles.js - simple particle effect in the background -->
+  <script>
+    // Simple particles background
+    const canvas = document.getElementById('aaParticles');
+    const ctx = canvas.getContext('2d');
+    let w,h,particles=[];
+    function resize(){ w = canvas.width = canvas.offsetWidth; h = canvas.height = canvas.offsetHeight; }
+    window.addEventListener('resize',resize); resize();
+    const N=60;
+    particles = [];
+    for(let i=0;i<N;i++){
+      particles.push({
+        x: Math.random()*w,
+        y: Math.random()*h,
+        vx: (Math.random()-.5)*.6,
+        vy: (Math.random()-.5)*.6,
+        r: Math.random()*2+0.5
+      });
+    }
+    function step(){
+      ctx.clearRect(0,0,w,h);
+      for(const p of particles){
+        p.x += p.vx; p.y += p.vy;
+        if(p.x < -10) p.x = w + 10;
+        if(p.x > w + 10) p.x = -10;
+        if(p.y < -10) p.y = h + 10;
+        if(p.y > h + 10) p.y = -10;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*6);
+        g.addColorStop(0, 'rgba(168,85,247,.9)');
+        g.addColorStop(1, 'rgba(34,211,238,0)');
+        ctx.fillStyle = g;
+        ctx.fill();
+      }
+      requestAnimationFrame(step);
+    }
+    step();
+  </script>
+
+  <!-- Tilt effect on hero image -->
+  <script>
+    // Tilt effect on hero image
+    const tiltWrap = document.querySelector('.aa-tilt');
+    const tiltee = document.querySelector('.aa-card-inner');
+    if(tiltWrap && tiltee){
+      tiltWrap.addEventListener('mousemove',(e)=>{
+        const rect = tiltWrap.getBoundingClientRect();
+        const x = (e.clientX - rect.left)/rect.width - 0.5;
+        const y = (e.clientY - rect.top)/rect.height - 0.5;
+        tiltee.style.transform = `rotateY(${x*8}deg) rotateX(${-y*8}deg)`;
+      });
+      tiltWrap.addEventListener('mouseleave',()=>{ tiltee.style.transform='rotateX(0) rotateY(0)'; });
+    }
+  </script>
+
+  <!-- Reveal on scroll -->
+  <script>
+    // Reveal on scroll
+    const observer = new IntersectionObserver(entries=>{
+      entries.forEach(en=>{
+        if(en.isIntersecting){
+          en.target.classList.add('opacity-100','translate-y-0');
+        }
+      });
+    },{threshold:.12});
+    document.querySelectorAll('#grid article').forEach(el=>{
+      el.classList.add('opacity-0','translate-y-6','transition','duration-500');
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
