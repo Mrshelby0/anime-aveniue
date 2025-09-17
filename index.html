@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Anime Avenue — Catalog</title>
 
-  <!-- Fonts & Tailwind (matches Index.html) -->
+  <!-- Fonts & Tailwind (matches index.html) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;700;800&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -52,10 +52,10 @@
 </head>
 <body class="bg-gray-950 text-white">
   <script src="transition.js"></script>
-  <!-- Header (same theme as Index) -->
+  <!-- Header (same theme as index) -->
   <header class="sticky top-0 z-40 bg-gray-900/80 backdrop-blur border-b border-white/10">
     <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-      <a href="Index.html" class="flex items-center gap-3">
+      <a href="index.html" class="flex items-center gap-3">
         <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-fuchsia-500 via-purple-500 to-cyan-400 aa-glow overflow-hidden">
           <img src="images/Katana/anime.jpg" alt="Logo" class="h-full w-full object-cover rounded-xl">
         </div>
@@ -63,7 +63,7 @@
       </a>
 
       <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a href="Index.html#home" class="text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Home</a>
+        <a href="index.html#home" class="text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Home</a>
         <a href="Catalog.html" class="hover:text-fuchsia-400 font-semibold hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">Catalog</a>
         <a href="About-Us.html" class="hover:text-fuchsia-400 hover:scale-125 hover:transition-all duration-500 hover:bg-black hover:shadow-xl hover:shadow-fuchsia-600 hover:rounded-2xl hover:p-2">About-Us</a>
       </nav>
@@ -83,10 +83,10 @@
   </header>
   <!-- Mobile Navigation Panel -->
   <nav id="mobilePanel" class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-start pt-24 space-y-6 opacity-0 scale-y-0 pointer-events-none transition-all duration-300 md:hidden">
-    <a href="Index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
+    <a href="index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
     <a href="Catalog.html" class="text-lg font-semibold text-white" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Catalog</a>
-    <a href="Index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
-    <a href="Index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
+    <a href="index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
+    <a href="index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
     <a href="login.html" target="_blank" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Log-In</a>
     <button onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';" class="mt-8 px-6 py-2 rounded-full bg-fuchsia-600 text-white font-semibold">Close</button>
   </nav>
