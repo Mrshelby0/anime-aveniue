@@ -85,9 +85,7 @@
   <nav id="mobilePanel" class="fixed inset-0 z-50 bg-black/80 flex flex-col items-center justify-start pt-24 space-y-6 opacity-0 scale-y-0 pointer-events-none transition-all duration-300 md:hidden">
     <a href="index.html#home" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Home</a>
     <a href="Catalog.html" class="text-lg font-semibold text-white" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Catalog</a>
-    <a href="index.html#featured" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Featured</a>
-    <a href="index.html#contact" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Contact</a>
-    <a href="login.html" target="_blank" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">Log-In</a>
+    <a href="About-Us.html" class="text-lg font-semibold text-white hover:text-fuchsia-400" onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';">About-Us</a>
     <button onclick="document.getElementById('mobilePanel').classList.add('opacity-0','scale-y-0','pointer-events-none');document.body.style.overflow='';" class="mt-8 px-6 py-2 rounded-full bg-fuchsia-600 text-white font-semibold">Close</button>
   </nav>
 
@@ -269,9 +267,9 @@
       <div class="aa-tilt">
         <div class="aa-card-inner aa-neon-border rounded-2xl bg-gradient-to-b from-gray-900 to-gray-950 p-2 hover:shadow-fuchsia-500 hover:shadow-2xl transition-all duration-1000 ease-in-700">
           <div id="hero-slider" class="relative w-full aspect-[4/3] overflow-hidden rounded-xl">
-            <img src="images/Katana/katana.jpg" alt="Katana" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-100 transition-opacity duration-700" style="z-index:2;">
-            <img src="images/Key Chain/dor.jpg" alt="Keychain" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:1;">
-            <img src="images/Action Figure/zoro-removebg-preview.png" alt="Action Figure" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:0;">
+            <img src="images/Katana/3 Layar Wooden Wall Mount Stand .jpg" alt="Katana" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-100 transition-opacity duration-700" style="z-index:2;">
+            <img src="images/Key Chain/Pink Kitty Face Change Key chan.jpg" alt="Keychain" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:1;">
+            <img src="images/Action Figure/DBZ Golden Shenron 22cm (Blister +Box).jpg" alt="Action Figure" class="slider-img absolute inset-0 w-full h-full object-cover aa-scanlines opacity-0 transition-opacity duration-700" style="z-index:0;">
             <button id="slider-prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-1 hover:bg-fuchsia-600 transition" aria-label="Previous slide" style="z-index:10;">&#8592;</button>
             <button id="slider-next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white rounded-full p-1 hover:bg-fuchsia-600 transition" aria-label="Next slide" style="z-index:10;">&#8594;</button>
           </div>
@@ -323,68 +321,183 @@
   <section id="catalog" class="max-w-7xl mx-auto px-4 py-12">
     <h2 class="aa-title text-3xl md:text-4xl font-extrabold text-center mb-10">Our <span class="aa-gradient-text">Collection</span></h2>
     <div id="grid" class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="THIS IS A DESCRIPTION MAKE SURE YOU READ SKIBIDI/DADDY" data-images='["img1.jpg","img2.jpg"]'>
-        <img src="images/Action Figure/Batman.jpg" class="w-full h-56 object-cover" alt="Figure" />
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro Standing On Tornado 37cm (Box).jpg" alt="Zoro Standing On Tornado 37cm (Box)" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">Batman Action Figure</h3>
+          <h3 class="font-semibold">Zoro Standing On Tornado 37cm (Box)</h3>
+          <p class="text-gray-400">₹3,200</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Zoro Standing with Sword 21cm .jpg" alt="Zoro Standing with Sword 21cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Zoro Standing with Sword 21cm</h3>
+          <p class="text-gray-400">₹1,050</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/One Piece 10pcs Set 8-9cm .jpg" alt="One Piece 10pcs Set 8-9cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">One Piece 10pcs Set 8-9cm</h3>
+          <p class="text-gray-400">₹1,550</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Big Red Punch 25cm .jpg" alt="Luffy Big Red Punch 25cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Luffy Big Red Punch 25cm</h3>
+          <p class="text-gray-400">₹2,400</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Gojo Crouched 15cm .jpg" alt="Gojo Crouched 15cm" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">Gojo Crouched 15cm</h3>
           <p class="text-gray-400">₹550</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="katanas">
-        <img src="images/Katana/sanime.jpg" class="w-full h-56 object-cover" alt="Katana" />
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Luffy Sitting 10cm White .jpg" alt="Luffy Sitting 10cm White" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">Sanime Katana</h3>
-          <p class="text-gray-400">₹3,000</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <h3 class="font-semibold">Luffy Sitting 10cm White</h3>
+          <p class="text-gray-400">₹300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
         </div>
       </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="accessories">
-        <img src="images/Key Chain/dor.jpg" class="w-full h-52 rounded-2xl object-cover" alt="Keychain" />
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-2xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="figures" data-desc="Luffy 19cm PVC figure. Mint condition. Includes stand." data-title="Luffy Action Figure (19cm)" data-price="₹550">
+        <img src="images/Action Figure/Demon Slayer Akaza 30cm .jpg" alt="Demon Slayer Akaza 30cm" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">Doraemon Keychain</h3>
+          <h3 class="font-semibold">Demon Slayer Akaza 30cm</h3>
+          <p class="text-gray-400">₹1,300</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+            <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Katana -->
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="katanas" data-desc="Hand-forged samurai katana. Full-tang. Includes saya." data-title="Samurai Katana" data-price="₹3,000">
+        <img src="images/Katana/3 Layar Wooden Wall Mount Stand .jpg" alt="3 Layar Wooden Wall Mount Stand" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">3 Layar Wooden Wall Mount Stand</h3>
+          <p class="text-gray-400">₹700</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+                    </div>
+        </div>
+      </article>
+      <!-- Keychain -->
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/RCB Virat T-Shirt 3D Key Chain.jpg" alt="RCB Virat T-Shirt 3D Key Chain" class="w-full h-56 object-cover">
+        <div class="p-4">
+          <h3 class="font-semibold">RCB Virat T-Shirt 3D Key Chain</h3>
           <p class="text-gray-400">₹100</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
         </div>
       </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="posters">
-        <img src="images/poster/draiganball.jpg" class="w-full h-56 object-cover" alt="Poster" />
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Squied Game Face Change Key Chain .jpg" alt="Squid Game Face Change Key Chain" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">draiganball Poster (A3)</h3>
-          <p class="text-gray-400">₹199</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <h3 class="font-semibold">Squid Game Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
         </div>
       </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="bobblehead">
-        <img src="images/bobblehead/anya.jpg" class="w-full h-56 object-cover" alt="Figure" />
+            <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Pink Kitty Face Change Key chan.jpg" alt="Pink Kitty Face Change Key Chain" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">Anya Bobblehead</h3>
-          <p class="text-gray-400">₹799</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <h3 class="font-semibold">Pink Kitty Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
         </div>
       </article>
-    <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="qposket">
-        <img src="images/posket/captain america.jpg" class="w-full h-56 object-cover" alt="Katana" />
+      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="keychain" data-desc="Doraemon keychain. Metal alloy." data-title="Doraemon Keychain" data-price="₹100">
+        <img src="images/Key Chain/Doremon Face Change Key Chain.jpg" alt="Doremon Face Change Key Chain" class="w-full h-56 object-cover">
         <div class="p-4">
-          <h3 class="font-semibold">Captain America Posket</h3>
-          <p class="text-gray-400">₹5,499</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
-        </div>
-      </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="accessories">
-        <img src="images/Robe/hokaje.jpg" class="w-full h-56 object-cover" alt="Accessory" />
-        <div class="p-4">
-          <h3 class="font-semibold">Hokaje Robe</h3>
-          <p class="text-gray-400">₹249</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
-        </div>
-      </article>
-      <article class="aa-card aa-neon-border rounded-2xl bg-gray-900 overflow-hidden hover:shadow-xl hover:shadow-fuchsia-600 transition-all duration-500" data-category="posters">
-        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=900" class="w-full h-56 object-cover" alt="Poster" />
-        <div class="p-4">
-          <h3 class="font-semibold">Limited Art Print</h3>
-          <p class="text-gray-400">₹399</p>
-          <button class="mt-3 w-full py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold open-modal hover:cursor-pointer">Quick View</button>
+          <h3 class="font-semibold">Doremon Face Change Key Chain</h3>
+          <p class="text-gray-400">₹100</p>
+          <div class="mt-3 flex gap-2">
+            <button class="open-modal mt-0 flex-1 py-2 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 font-semibold">Quick View</button>
+           <button class="add-to-cart inline-flex items-center justify-center px-3 py-2 rounded-lg border border-white/10 bg-transparent hover:bg-fuchsia-700" title="Add to Cart">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2 9m13-9l2 9m-5-4a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>          </div>
         </div>
       </article>
     </div>
@@ -417,8 +530,8 @@
             <p class="text-gray-300">Fresh arrivals every week. DM for preorders and bundle deals.</p>
           </div>
           <div class="md:col-span-2 grid sm:grid-cols-2 gap-4">
-            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Action Figure/zoro.jpg" alt="Drop 1"></div>
-            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Katana/katana.jpg" alt="Drop 2"></div>
+            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Action Figure/Zoro On Ship 27cm Action Figure (WIth Box).jpg" alt="Drop 1"></div>
+            <div class="rounded-xl overflow-hidden bg-gray-900"><img class="w-full h-full object-cover" src="images/Katana/3 Layar Wooden Wall Mount Stand .jpg" alt="Drop 2"></div>
           </div>
         </div>
       </div>
