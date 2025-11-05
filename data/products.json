@@ -1,0 +1,47 @@
+[
+  {
+    "id": "luffy-gear5-drift-16cm",
+    "title": "Luffy Gear 5 Drift 16cm",
+    "price": 2499,
+    "currency": "INR",
+    "category": "Action Figure",
+    "image": "images/Action Figure/Luffy Gear 5 Drift 16cm (Blister + Box).jpg",
+    "description": "One Piece action figure, Gear 5 Drift, 16cm, blister + box packaging."
+  },
+  {
+    "id": "gojo-standing-30cm",
+    "title": "Gojo Standing Dual Face 30cm",
+    "price": 3999,
+    "currency": "INR",
+    "category": "Action Figure",
+    "image": "images/Action Figure/Gojo Standing Dual Face 30cm (Blister + Box).jpg",
+    "description": "Jujutsu Kaisen Satoru Gojo dual face standing figure, 30cm."
+  },
+  {
+    "id": "zoro-on-ship-27cm",
+    "title": "Zoro On Ship 27cm",
+    "price": 3599,
+    "currency": "INR",
+    "category": "Action Figure",
+    "image": "images/Action Figure/Zoro On Ship 27cm Action Figure (WIth Box).jpg",
+    "description": "Roronoa Zoro on ship base, 27cm, with box."
+  },
+  {
+    "id": "shinchan-bobblehead",
+    "title": "Shinchan Bobblehead",
+    "price": 799,
+    "currency": "INR",
+    "category": "bobblehead",
+    "image": "images/bobblehead/sinchan.jpg",
+    "description": "Cute Shinchan bobblehead."
+  },
+  {
+    "id": "katana-stand-pdf",
+    "title": "3 Layer Wooden Wall Mount Stand",
+    "price": 1499,
+    "currency": "INR",
+    "category": "Katana",
+    "image": "images/Katana/3 Layar Wooden Wall Mount Stand .jpg",
+    "description": "Three-layer wall mount stand for katana display."
+  }
+]
